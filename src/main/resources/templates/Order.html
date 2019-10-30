@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <script src="layui/layui.js"></script>
+    <script src="js/jquery.min.js"></script>
+
+
+</head>
+<body>
+
+<table id="demo" lay-filter="test" style="margin-top: 0px"></table>
+
+</body>
+<!--行内工具栏-->
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-sm" lay-event="UpdateUser">编辑</a>
+    <a class="layui-btn layui-btn-sm " lay-event="setRoleAction">删除</a>
+
+
+</script>
+<script>
+    layui.use('table', function(){
+        var table = layui.table;
+
+        //第一个实例
+        table.render({
+            elem: '#demo'
+            ,height: 600
+            ,url: 'page/select' //数据接口
+            ,page: true //开启分页
+            ,limits: [3,5,10]
+            ,limit:5
+
+            ,toolbar: "#toolbar"
+
+            ,cols: [
+                [ //表头
+
+                    {field: 'yh_orderid', title: '编号', width:142, sort: true, fixed: 'left'}
+                    ,{field: 'yh_number', title: '订单编号', width:142}
+                    ,{field: 'yh_newaddress', title: '车辆所在地', width:142}
+                    ,{field: 'yh_xmfw', title: '服务类型', width:142}
+                    ,{field: 'yh_carnumber', title: '车牌号', width:142}
+                    ,{field: 'yh_timebegin', title: '开始时间', width:142}
+                    ,{field: 'yh_timeend', title: '结束时间', width:142}
+                    ,{field: 'yh_style', title: '订单状态', width:142}
+                    ,{field: 'yh_name', title: '用户名', width:142}
+                    ,{field: 'yg_name', title: '洗车工', width:142}
+                    ,{
+                    width: 200,
+                    title: "操作",
+                    toolbar: "#barDemo"
+                }
+
+                ]
+            ],
+            done:function(res, curr, count) {
+                $("[data-field = 'yh_style']").children().each(function () {
+                    if ($(this).text() == '1') {
+                        $(this).text("已完成");
+                    }
+                });
+            }
+        });
+
+    });
+</script>
+
+
+
+
+
+<script type="text/html" id="toolbar">
+    <div class="layui-form-item" style="margin-top: 10px; margin-left:10px">
+
+        <form class="layui-form" method="post" onsubmit="return false;">
+            <label class="layui-form-mid">用户名:</label>
+            <div class="layui-input-inline" style="width:800px;">
+                <input type="text" id="txtUserName" name="txtUserName" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-input-inline" style="width:100px;">
+                <button class="layui-btn" id="search" data-type="reload">搜索</button>
+            </div>
+        </form>
+    </div>
+
+
+</script>
+</html>

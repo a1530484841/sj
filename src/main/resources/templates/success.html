@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<shiro:hasPermission name="/findGl">
+    班级管理：<a href="findGl">班级管理</a><br>
+    班级管理：<a href="findll">添加班级</a><br>
+</shiro:hasPermission>
+
+
+<shiro:hasPermission name="/findYh">
+    学生管理：<a href="findYh">学生管理</a><br>
+</shiro:hasPermission>
+</body>
+</html>

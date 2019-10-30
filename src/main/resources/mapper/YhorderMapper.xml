@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aaa.sujiexiche.sj.mapper.Yh_orderMapper">
+
+    <select id="SelectYhorder" parameterType="map" resultType="com.aaa.sujiexiche.sj.entity.Yhorder">
+       SELECT *FROM yh_order yho,yh_users yhu,yg_mgs ygm WHERE yho.yh_id=yhu.yh_id AND yho.yg_id=ygm.yg_id limit #{page},#{limit}
+    </select>
+    <select id="selectAllEmpCount" parameterType="map" resultType="int">
+		select count(yh_orderid) from yh_order
+	</select>
+</mapper>
