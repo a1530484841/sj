@@ -1,13 +1,64 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD com.example.Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.aaa.sujiexiche.sj.mapper.UserMapper">
-
-    <select id="selectUser" resultType="com.aaa.sujiexiche.sj.entity.UserEntity">
-        select * from sys_permission q,sys_user u where username=#{username} and q.u_id=u.u_id
+<mapper namespace="com.aaa.sujiexiche.sj.mapper.usermapper">
+    <select id="login" resultType="com.aaa.sujiexiche.sj.entity.sys_user">
+        select *from sys_user where username=#{username}
     </select>
-
-      <insert id="addUser">
-          insert into sys_user()
-      </insert>
+    <resultMap id="MyDifRole" type="com.aaa.sujiexiche.sj.entity.sys_user_role">
+        <id column="id" property="id"/>
+        <result column="u_id" property="u_id"/>
+        <result column="r_id" property="r_id"/>
+        <result column="usercode" property="su.usercode"/>
+        <result column="username" property="su.username"/>
+        <result column="password" property="su.password"/>
+        <result column="salt" property="su.salt"/>
+        <result column="r_name" property="sr.r_name"/>
+        <result column="available" property="sr.available"/>
+    </resultMap>
+    <select id="getRoleByUser" resultMap="MyDifRole">
+           select *from sys_user su,sys_user_role sur,sys_role sr where su.u_id=sur.u_id
+            and sr.r_id=sur.r_id and su.userid=#{u_id}
+        </select>
+    <resultMap id="MyDifPermission" type="com.aaa.sujiexiche.sj.entity.sys_role_permission">
+        <id column="rp_id" property="rp_id"/>
+        <result column="p_id" property="p_id"/>
+        <result column="r_id" property="r_id"/>
+        <result column="p_name" property="sp.usercode"/>
+        <result column="type" property="sp.type"/>
+        <result column="url" property="sp.url"/>
+        <result column="percode" property="sp.percode"/>
+        <result column="parentid" property="sp.parentid"/>
+        <result column="parentids" property="sp.parentids"/>
+        <result column="sortstring" property="sp.sortstring"/>
+        <result column="available" property="sp.available"/>
+        <result column="name" property="sr.name"/>
+    </resultMap>
+    <select id="findPermsByRoleId" resultMap="MyDifPermission">
+        select *from sys_permission p,sys_role r,sys_role_permission rp WHERE
+p.p_id=rp.p_id and r.r_id=rp.r_id and r.r_id=#{r_id}
+    </select>
+    <select id="selectmenus" parameterType="int" resultType="com.aaa.sujiexiche.sj.entity.sys_permission">
+        SELECT *FROM sys_permission WHERE TYPE = 'permission' AND p_id IN
+	  (SELECT p_id FROM
+	    sys_role_permission
+	  WHERE r_id IN
+	    (SELECT
+	      r_id
+	    FROM
+	      sys_user_role
+	    WHERE u_id = #{u_id}))
+    </select>
+    <select id="selecturl" parameterType="int" resultType="com.aaa.sujiexiche.sj.entity.sys_permission">
+         SELECT *FROM sys_permission WHERE TYPE = 'menu' AND p_id IN
+	  (SELECT p_id FROM
+	    sys_role_permission
+	  WHERE r_id IN
+	    (SELECT
+	      r_id
+	    FROM
+	      sys_user_role
+	    WHERE u_id = #{u_id}))
+    </select>
 </mapper>

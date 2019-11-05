@@ -3,9 +3,18 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.aaa.sujiexiche.sj.mapper.Yh_orderMapper">
 
-    <select id="SelectYhorder" parameterType="map" resultType="com.aaa.sujiexiche.sj.entity.Yhorder">
-       SELECT *FROM yh_order yho,yh_users yhu,yg_mgs ygm WHERE yho.yh_id=yhu.yh_id AND yho.yg_id=ygm.yg_id limit #{page},#{limit}
-    </select>
+        <select id="SelectYhorder" resultType="com.aaa.sujiexiche.sj.entity.Yhorder">
+
+            SELECT *FROM yh_order yho,yh_users yhu,yg_mgs ygm where yho.yh_id=yhu.yh_id AND yho.yg_id=ygm.yg_id
+
+            <if test="yh_name!=null and yh_name!=''">
+                and yh_name  like concat('%' ,concat(#{yh_name},'%'))
+            </if>
+
+
+
+        </select>
+
     <select id="selectAllEmpCount" parameterType="map" resultType="int">
 		select count(yh_orderid) from yh_order
 	</select>

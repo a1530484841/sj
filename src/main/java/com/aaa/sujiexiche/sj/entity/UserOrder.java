@@ -1,24 +1,46 @@
 package com.aaa.sujiexiche.sj.entity;
 
-public class Yhorder {
+public class UserOrder {
     private Integer yh_orderid;
     private String yh_number;
     private String yh_newaddress;
-    private String yh_xmfw;
     private String yh_carnumber;
     private String yh_timebegin;
     private String yh_timeend;
     private int yh_style;
     private int yh_id;
-    private int yg_id;
     private String yh_name;
-    private String yg_name;
     private int xcs_id;
     private String xcs_name;
     private String xcs_price;
+    private String yh_phone;
 
+    public String getYh_phone() {
+        return yh_phone;
+    }
 
+    @Override
+    public String toString() {
+        return "UserOrder{" +
+                "yh_orderid=" + yh_orderid +
+                ", yh_number='" + yh_number + '\'' +
+                ", yh_newaddress='" + yh_newaddress + '\'' +
+                ", yh_carnumber='" + yh_carnumber + '\'' +
+                ", yh_timebegin='" + yh_timebegin + '\'' +
+                ", yh_timeend='" + yh_timeend + '\'' +
+                ", yh_style=" + yh_style +
+                ", yh_id=" + yh_id +
+                ", yh_name='" + yh_name + '\'' +
+                ", xcs_id=" + xcs_id +
+                ", xcs_name='" + xcs_name + '\'' +
+                ", xcs_price='" + xcs_price + '\'' +
+                ", yh_phone='" + yh_phone + '\'' +
+                '}';
+    }
 
+    public void setYh_phone(String yh_phone) {
+        this.yh_phone = yh_phone;
+    }
 
     public Integer getYh_orderid() {
         return yh_orderid;
@@ -42,14 +64,6 @@ public class Yhorder {
 
     public void setYh_newaddress(String yh_newaddress) {
         this.yh_newaddress = yh_newaddress;
-    }
-
-    public String getYh_xmfw() {
-        return yh_xmfw;
-    }
-
-    public void setYh_xmfw(String yh_xmfw) {
-        this.yh_xmfw = yh_xmfw;
     }
 
     public String getYh_carnumber() {
@@ -92,14 +106,6 @@ public class Yhorder {
         this.yh_id = yh_id;
     }
 
-    public int getYg_id() {
-        return yg_id;
-    }
-
-    public void setYg_id(int yg_id) {
-        this.yg_id = yg_id;
-    }
-
     public String getYh_name() {
         return yh_name;
     }
@@ -108,29 +114,27 @@ public class Yhorder {
         this.yh_name = yh_name;
     }
 
-    public String getYg_name() {
-        return yg_name;
+    public int getXcs_id() {
+        return xcs_id;
     }
 
-    public void setYg_name(String yg_name) {
-        this.yg_name = yg_name;
+    public void setXcs_id(int xcs_id) {
+        this.xcs_id = xcs_id;
     }
 
-    @Override
-    public String toString() {
-        return "Yhorder{" +
-                "yh_orderid=" + yh_orderid +
-                ", yh_number='" + yh_number + '\'' +
-                ", yh_newaddress='" + yh_newaddress + '\'' +
-                ", yh_xmfw='" + yh_xmfw + '\'' +
-                ", yh_carnumber='" + yh_carnumber + '\'' +
-                ", yh_timebegin='" + yh_timebegin + '\'' +
-                ", yh_timeend='" + yh_timeend + '\'' +
-                ", yh_style=" + yh_style +
-                ", yh_id=" + yh_id +
-                ", yg_id=" + yg_id +
-                ", yh_name='" + yh_name + '\'' +
-                ", yg_name='" + yg_name + '\'' +
-                '}';
+    public String getXcs_name() {
+        return xcs_name;
+    }
+
+    public void setXcs_name(String xcs_name) {
+        this.xcs_name = xcs_name;
+    }
+
+    public String getXcs_price() {
+        return xcs_price;
+    }
+
+    public void setXcs_price(String xcs_price) {
+        this.xcs_price = xcs_price;
     }
 }

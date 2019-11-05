@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>待洗车辆查询</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all"/>
+
     <link rel="stylesheet" href="layui/css/layui.css">
     <script src="layui/layui.js"></script>
     <script src="js/jquery.min.js"></script>
@@ -10,83 +12,310 @@
 
 </head>
 <body>
+<!-- //用户订单查询 -->
+<form class="layui-form" method="post" id="searchFrm">
+    <div class="layui-form-item" style="margin-top: 10px">
+        <div class="layui-inline">
+            <label class="layui-form-label">用户姓名:</label>
+            <div class="layui-input-inline">
+                <input type="text" name="yh_name"  autocomplete="off" class="layui-input" id="getname">
+            </div>
+        </div>
+    </div>
 
-<table id="demo" lay-filter="test" style="margin-top: 0px"></table>
+    <div class="layui-inline">
+        <label class="layui-form-label">&nbsp;&nbsp;&nbsp;&nbsp;</label>
+        <div class="layui-input-inline">
+            <button type="button" class="layui-btn layui-btn-normal  layui-icon layui-icon-search" id="doSearch">查询</button>
+            <button type="reset" class="layui-btn layui-btn-warm  layui-icon layui-icon-refresh">重置</button>
+        </div>
+    </div>
+</form>
 
-</body>
-<!--行内工具栏-->
-<script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-sm" lay-event="UpdateUser">编辑</a>
-    <a class="layui-btn layui-btn-sm " lay-event="setRoleAction">删除</a>
+<table class="layui-hide" id="userTable" lay-filter="userTable"></table>
+
+<div  id="userBar" style="display: none;">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">派单</a>
+</div>
+
+<!-- //派单弹出层 -->
+<!-- 添加和修改的弹出层开始 -->
+
+<div style="display: none;padding: 20px" id="saveOrUpdateDiv" >
+    <input id="orderid" type="hidden">
+    <form class="layui-form"  lay-filter="dataFrm" id="dataFrm">
 
 
-</script>
-<script>
-    layui.use('table', function(){
+        <div class="layui-form-item">
+
+            <div class="layui-inline">
+                <label class="layui-form-label">订单编号：</label>
+                <div class="layui-input-inline">
+
+                    <input type="text" name="xcg_number" lay-verify="required"   placeholder="" autocomplete="off"
+                           class="layui-input" id="xcg_number" readonly="readonly">
+                </div>
+            </div>
+
+
+
+            <div class="layui-inline">
+                <label class="layui-form-label">用户姓名：</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="xcg_yhname" lay-verify="required"  placeholder="" autocomplete="off"
+                           class="layui-input" id="xcg_yhname" readonly="readonly">
+                </div>
+            </div>
+
+
+
+
+            <div class="layui-inline">
+                <label class="layui-form-label">用户电话：</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="xcg_phone"  placeholder="" autocomplete="off"
+                           class="layui-input" id="xcg_phone" readonly="readonly">
+                </div>
+            </div>
+
+
+        <div class="layui-inline">
+            <label class="layui-form-label">用户位置：</label>
+            <div class="layui-input-inline">
+                <input type="text" name="xcg_yhadress"  placeholder="" autocomplete="off"
+                       class="layui-input" id="xcg_yhadress" readonly="readonly">
+            </div>
+        </div>
+
+
+            <div class="layui-inline">
+                <label class="layui-form-label">服务类型：</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="xcg_yhxmfw"  placeholder="" autocomplete="off"
+                           class="layui-input" id="xcg_yhxmfw" readonly="readonly">
+                </div>
+            </div>
+
+
+        <div class="layui-inline">
+            <label class="layui-form-label">车牌号：</label>
+            <div class="layui-input-inline">
+                <input type="text" name="xcg_yhcarnumber"  placeholder="" autocomplete="off"
+                       class="layui-input" id="xcg_yhcarnumber" readonly="readonly">
+            </div>
+        </div>
+
+
+            <div class="layui-inline">
+                <label class="layui-form-label">订单状态：</label>
+                <div class="layui-input-inline">
+                    <input type="text"   placeholder="" autocomplete="off"
+                           class="layui-input" id="xcg_style" readonly="readonly">
+                </div>
+            </div>
+
+
+        <div class="layui-inline">
+            <label class="layui-form-label">闲置洗车工：</label>
+            <div class="layui-input-inline">
+                    <select id="yg_id" name="yg_id">
+                          <option></option>
+                    </select>
+            </div>
+        </div>
+
+
+        <div class="layui-form-item" style="text-align: center;margin-left: -150px;margin-top: 200px;">
+            <div class="layui-input-block">
+                <button type="button" class="layui-btn layui-btn-normal layui-btn-sm layui-icon layui-icon-release" lay-filter="doSubmit" lay-submit="">提交</button>
+                <button type="reset" class="layui-btn layui-btn-warm layui-btn-sm layui-icon layui-icon-refresh" >重置</button>
+            </div>
+        </div>
+
+        </div>
+    </form>
+
+</div>
+<script th:src="@{/layui/layui.js}"></script>
+<script type="text/javascript" th:inline="none">
+
+    var tableIns;
+    layui.use([ 'jquery', 'layer', 'form', 'table'], function() {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
         var table = layui.table;
 
-        //第一个实例
-        table.render({
-            elem: '#demo'
-            ,height: 600
-            ,url: 'page/select' //数据接口
-            ,page: true //开启分页
-            ,limits: [3,5,10]
-            ,limit:5
 
-            ,toolbar: "#toolbar"
+        //渲染数据表格
+        tableIns=table.render({
+            elem: '#userTable'   //渲染的目标对象
+            ,url:'page/selectUserOrder' //数据接口
+            ,title: '用户数据表'//数据导出来的标题
+            ,toolbar:"#userToolBar"   //表格的工具条
+            ,height:'full-200'
+            ,cellMinWidth:200 //设置列的最小默认宽度
+            ,page: 1  //是否启用分页, limits: [10, 20, 30]
+            ,limits: [5, 10, 20]
+            ,limit: 5//默认采用3
+            ,cols: [[   //列表数据
+                { field: 'yh_orderid', title: '编号', width:142, sort: true, fixed: 'left'}
+                ,{field: 'yh_number', title: '订单编号', width:142}
+                ,{field: 'yh_newaddress', title: '车辆所在地', width:142}
+                ,{field: 'yh_carnumber', title: '车牌号', width:142}
+                ,{field: 'yh_timebegin', title: '开始时间', width:142}
+                ,{field: 'yh_timeend', title: '结束时间', width:142}
+                ,{field: 'yh_style', title: '订单状态', width:142}
+                ,{field: 'xcs_name', title: '服务类型', width:142}
+                ,{field: 'xcs_price', title: '消费金额（元）', width:142}
+                ,{field: 'yh_name', title: '用户名', width:142}
+                ,{field: 'yh_phone', title: '联系电话', width:142}
 
-            ,cols: [
-                [ //表头
 
-                    {field: 'yh_orderid', title: '编号', width:142, sort: true, fixed: 'left'}
-                    ,{field: 'yh_number', title: '订单编号', width:142}
-                    ,{field: 'yh_newaddress', title: '车辆所在地', width:142}
-                    ,{field: 'yh_xmfw', title: '服务类型', width:142}
-                    ,{field: 'yh_carnumber', title: '车牌号', width:142}
-                    ,{field: 'yh_timebegin', title: '开始时间', width:142}
-                    ,{field: 'yh_timeend', title: '结束时间', width:142}
-                    ,{field: 'yh_style', title: '订单状态', width:142}
-                    ,{field: 'yh_name', title: '用户名', width:142}
-                    ,{field: 'yg_name', title: '洗车工', width:142}
-                    ,{
-                    width: 200,
-                    title: "操作",
-                    toolbar: "#barDemo"
-                }
-
-                ]
-            ],
+                ,{fixed: 'right', title:'操作', toolbar: '#userBar',align:'center',width:'150'}
+            ]],
             done:function(res, curr, count) {
                 $("[data-field = 'yh_style']").children().each(function () {
-                    if ($(this).text() == '1') {
-                        $(this).text("已完成");
+                    if ($(this).text() == '0') {
+                        $(this).text("待洗车辆");
                     }
                 });
             }
+        })
+        //模糊查询
+        $("#doSearch").click(function(){
+
+            var params=$("#searchFrm").serialize();
+
+
+            tableIns.reload({
+                url:"page/selectUserOrder?"+params
+            })
+        });
+        //监听头部工具栏事件
+        table.on("toolbar(userTable)",function(obj){
+            switch(obj.event){
+                case 'add':
+                add();
+                    break;
+            };
+        })
+
+        var url;
+        var mainIndex;
+
+
+
+
+
+
+
+
+        //打开派单页面
+        function openUpdate(data){
+            mainIndex=layer.open({
+                type:1,
+                title:'订单速派',
+                content:$("#saveOrUpdateDiv"),
+                area:['800px','600px'],
+                success:function(data){
+                    form.val("dataFrm",data);
+                    url="page/addxcgorder";
+
+
+                }
+            });
+        }
+
+        //保存
+        form.on("submit(doSubmit)",function(obj){
+            var yh_orderid=$("#orderid").val();
+
+            $.ajax({
+                url: 'page/updateYhorder',
+                dataType: 'json',
+                type: 'post',
+                data:{
+                    "yh_orderid":yh_orderid
+                },
+                success: function (data) {
+
+                }
+            })
+
+
+
+            //序列化表单数据
+            var params=$("#dataFrm").serialize();
+
+            $.post(url,params,function(obj){
+                layer.msg(obj);
+                //关闭弹出层
+                layer.close(mainIndex)
+                //刷新数据 表格
+                tableIns.reload();
+            })
         });
 
-    });
+
+        //监听行工具事件
+        table.on('tool(userTable)', function(obj){
+            var data = obj.data; //获得当前行数据
+
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+
+            if(layEvent === 'edit'){
+                $("#xcg_number").val(data.yh_number);
+                $("#xcg_yhname").val(data.yh_name);
+                $("#xcg_phone").val(data.yh_phone);
+                $("#xcg_yhadress").val(data.yh_newaddress);
+                $("#xcg_yhxmfw").val(data.xcs_name);
+                $("#xcg_yhcarnumber").val(data.yh_carnumber);
+                 $("#xcg_style").val(data.yh_style);
+                $("#orderid").val(data.yh_orderid);
+                  var style=$("#xcg_style").val();
+
+                //下拉框查询遍历空闲洗车工A
+                var xcg_yhadress=$("#xcg_yhadress").val();
+                alert(xcg_yhadress);
+                $.ajax({
+                    url: 'page/toSelect',
+                    dataType: 'json',
+                    data:{
+                        "yg_area":xcg_yhadress
+                    },
+                    type: 'post',
+                    success: function (data) {
+                        //重新渲染 固定写法
+                        $.each(data, function (index, item) {
+                            $('#yg_id').append(new Option(item.yg_name, item.yg_id));// 下拉菜单里添加元素
+                        });
+                    }
+                })
+
+
+
+               if (style==0){
+              $("#xcg_style").val("待洗车辆");
+                   }
+
+
+
+                openUpdate(data);
+
+            }
+        });
+
+
+    })
+
+
+
 </script>
 
 
 
+</body>
 
 
-<script type="text/html" id="toolbar">
-    <div class="layui-form-item" style="margin-top: 10px; margin-left:10px">
-
-        <form class="layui-form" method="post" onsubmit="return false;">
-            <label class="layui-form-mid">用户名:</label>
-            <div class="layui-input-inline" style="width:800px;">
-                <input type="text" id="txtUserName" name="txtUserName" autocomplete="off" class="layui-input">
-            </div>
-            <div class="layui-input-inline" style="width:100px;">
-                <button class="layui-btn" id="search" data-type="reload">搜索</button>
-            </div>
-        </form>
-    </div>
-
-
-</script>
 </html>

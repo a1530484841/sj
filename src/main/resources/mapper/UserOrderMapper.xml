@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aaa.sujiexiche.sj.mapper.UserOrderMapper">
+
+    <select id="selectUserOrder" resultType="com.aaa.sujiexiche.sj.entity.UserOrder">
+
+      SELECT *FROM  yhorder yho,yh_users yhu,xc_style xcs where yho.yh_id=yhu.yh_id and yho.xcs_id=xcs.xcs_id and  yho.yh_style=0
+
+        <if test="yh_name!=null and yh_name!=''">
+            and yh_name  like concat('%' ,concat(#{yh_name},'%'))
+        </if>
+
+
+
+    </select>
+
+    <select id="selectAllEmpCount" parameterType="map" resultType="int">
+		select count(yh_orderid) from yhorder
+	</select>
+
+    <select id="selectYgmgs"  resultType="com.aaa.sujiexiche.sj.entity.YgmgsEntity">
+		select * from yg_mgs where yg_style=1 and yg_area like #{yg_area},'%'
+	</select>
+
+    <insert id="addXcg_order" parameterType="com.aaa.sujiexiche.sj.entity.xcg_order">
+        insert into xcg_order (xcg_number,xcg_yhname,xcg_phone,xcg_yhadress,xcg_yhxmfw,xcg_yhcarnumber,yg_id)values(#{xcg_number},#{xcg_yhname},#{xcg_phone},#{xcg_yhadress},#{xcg_yhxmfw},#{xcg_yhcarnumber},#{yg_id})
+    </insert>
+
+    <update id="UpdateYhorder" parameterType="com.aaa.sujiexiche.sj.entity.UserOrder">
+         update yhorder set yh_style=1 where yh_orderid=#{yh_orderid}
+    </update>
+</mapper>
