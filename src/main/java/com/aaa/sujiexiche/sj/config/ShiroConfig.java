@@ -50,7 +50,12 @@ public class ShiroConfig {
         Map<String,String> filtermap=new LinkedHashMap<>();
         //直接访问
         filtermap.put("/Login","anon");
-
+        //设置不拦截静态资源
+        filtermap.put("/css/**","anon");
+        filtermap.put("/js/**","anon");
+        filtermap.put("/layui/**","anon");
+        filtermap.put("/upload/**","anon");
+        //设置拦截所有
         //认证成功访问
         filtermap.put("/success","authc");
         filtermap.put("/page/*","authc");
@@ -58,6 +63,8 @@ public class ShiroConfig {
         /*filtermap.put("/findGl","perms[/findGl]");*/
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filtermap);
         shiroFilterFactoryBean.setLoginUrl("/toLogin");
+        //没有权限时跳转noAuth页面
+        shiroFilterFactoryBean.setUnauthorizedUrl("/index");
         return  shiroFilterFactoryBean;
     }
 

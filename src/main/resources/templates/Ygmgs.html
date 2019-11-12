@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>洗车工管理</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all"/>
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <script src="layui/layui.js"></script>
+    <script src="js/jquery.min.js"></script>
+</head>
+<body>
+<table class="layui-hide" id="userTable" lay-filter="userTable"></table>
+<div  id="userBar" style="display: none;">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">审核</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">驳回</a>
+</div>
+
+<script src="layui/layui.all.js"></script>
+<script type="text/javascript" th:inline="none">
+
+    var tableIns;
+    layui.use([ 'jquery', 'layer', 'form', 'table'], function() {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var table = layui.table;
+
+        //渲染数据表格
+        tableIns = table.render({
+            elem: '#userTable'   //渲染的目标对象
+            , url: 'role/SelectYgmgs' //数据接口
+            , title: '用户数据表'//数据导出来的标题
+            , toolbar: "#userToolBar"   //表格的工具条
+            , height: '290'
+            , cellMinWidth: 200 //设置列的最小默认宽度
+            , page: 1  //是否启用分页, limits: [10, 20, 30]
+            , limits: [2, 4, 6]
+            , limit: 4//默认采用3
+            , cols: [[   //列表数据
+                {field: 'yg_id', title: '员工编号', width: 142, sort: true, fixed: 'left'}
+                , {field: 'yg_name', title: '员工姓名', width: 142, align: 'center'}
+                , {field: 'yg_phone', title: '电话号码', width: 142, align: 'center'}
+                , {field: 'yg_newaddress', title: '居住地址', width: 142, align: 'center'}
+                , {field: 'yg_style', title: '员工状态', width: 142, align: 'center'}
+                , {field: 'yg_area', title: '负责区域', width: 142, align: 'center'}
+                , {fixed: 'right', title: '操作', toolbar: '#userBar', align: 'center', width: '200'}
+            ]]
+        })
+
+        //监听行工具事件
+        table.on('tool(userTable)', function(obj){
+            var datas = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            if(layEvent === 'edit'){ //修改
+                layer.confirm('你确定要同意【'+datas.yg_name+'】这个用户加盟吗', function(index){
+                    //向服务端发送删除指令
+                    $.post("role/YgmaShen",{yg_id:datas.yg_id},function(res){
+                    if(res>0){
+                        layer.msg("审核成功");
+                    }else {
+                        layer.msg("审核失败");
+                    }
+                        //刷新数据 表格
+                        tableIns.reload();
+                })
+            });
+            }else if(layEvent === 'del'){
+                layer.confirm('你确定要驳回【'+datas.yg_name+'】这个用户加盟吗', function(index){
+                    //向服务端发送删除指令
+                    $.post("role/Ygmabo",{yg_id:datas.yg_id},function(res){
+                        if(res>0){
+                            layer.msg("驳回成功");
+                        }else {
+                            layer.msg("驳回失败");
+                        }
+                        //刷新数据 表格
+                        tableIns.reload();
+                    })
+                });
+            }
+        });
+    })
+</script>
+</body>
+</html>

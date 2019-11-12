@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all"/>
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <script src="layui/layui.js"></script>
+    <script src="js/jquery.min.js"></script>
+</head>
+<body>
+<div class="layui-btn-container">
+    <button type="button" class="layui-btn layui-btn-sm" lay-demo="getChecked">获取选中节点数据</button>
+    <button type="button" class="layui-btn layui-btn-sm" lay-demo="setChecked">勾选指定节点</button>
+    <button type="button" class="layui-btn layui-btn-sm" lay-demo="reload">重载实例</button>
+</div>
+<div id="demo" class="demo-tree-more"></div>
+<table class="layui-hide" id="userTable" lay-filter="userTable"></table>
+<script src="layui/layui.all.js"></script>
+<script type="text/javascript" th:inline="none">
+    var tableIns;
+    layui.use([ 'jquery', 'layer', 'form', 'table','tree','util'], function() {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var table = layui.table;
+        var tree = layui.tree;
+        var util = layui.util;
+        //渲染数据表格
+        tableIns=table.render({
+            elem: '#userTable'   //渲染的目标对象
+            ,url:'role/SelectRole' //数据接口
+            ,title: '用户数据表'//数据导出来的标题
+            ,toolbar:"#userToolBar"   //表格的工具条
+            ,height:'290'
+            ,cellMinWidth:200 //设置列的最小默认宽度
+            ,page: 1  //是否启用分页, limits: [10, 20, 30]
+            ,limits: [2,4,6]
+            ,limit: 4//默认采用3
+            ,cols: [[   //列表数据
+                { field: 'r_id', title: '员工编号', width:142, sort: true, fixed: 'left'}
+                ,{field: 'r_name', title: '员工姓名', width:142,align:'center'}
+                ,{field: 'available', title: '员工账号', width:142,align:'center'}
+            ]]
+        })
+        var nodes="";
+        $.ajax({
+            url:"",
+            type:"post",
+            dataType:"json",
+            async:false,
+            success:function (result) {
+                
+            }
+        })
+    });
+
+</script>
+</body>
+</html>

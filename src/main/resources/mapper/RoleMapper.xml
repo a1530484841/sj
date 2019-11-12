@@ -1,0 +1,66 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD com.example.Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aaa.sujiexiche.sj.mapper.roleMapper">
+<!--    <resultMap id="MyDifRole" type="com.aaa.sujiexiche.sj.entity.sys_user_role" autoMapping="true">
+        <result column="id" property="id"/>
+        <result column="u_id" property="u_id"/>
+        <result column="r_id" property="r_id"/>
+        <collection property="su" ofType="com.aaa.sujiexiche.sj.entity.sys_user">
+        <result column="usercode" property="usercode"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="address" property="address"/>
+        <result column="phone" property="phone"/>
+        <result column="salt" property="salt"/>
+        </collection>
+        <collection property="sr" ofType="com.aaa.sujiexiche.sj.entity.sys_role">
+            <result column="r_name" property="r_name"/>
+        </collection>
+    </resultMap>-->
+    <select id="selectRole" resultType="com.aaa.sujiexiche.sj.entity.RoleUser">
+        select *from sys_user su,sys_user_role sur,sys_role sr where su.u_id=sur.u_id
+            and sr.r_id=sur.r_id and sur.r_id!=1
+        <if test="username!=null and username!=''">
+            and username like concat('%' ,concat(#{username},'%'))
+        </if>
+    </select>
+    <select id="ChaRole" resultType="com.aaa.sujiexiche.sj.entity.sys_role">
+        select r_id,r_name from sys_role
+    </select>
+    <select id="seelectuser" resultType="int">
+        select count(*)from sys_user where username=#{username}
+    </select>
+    <insert id="insertUser" parameterType="com.aaa.sujiexiche.sj.entity.sys_user">
+        insert into sys_user(usercode,username,password,address,phone,salt,locked) values(#{usercode},
+        #{username},#{password},#{address},#{phone},'qwerty','1')
+    </insert>
+    <!--根据name查询id-->
+    <select id="selectuid" resultType="com.aaa.sujiexiche.sj.entity.sys_user">
+        select u_id from sys_user where username=#{username}
+    </select>
+    <insert id="insertRoleUser">
+        insert into sys_user_role(u_id,r_id) values(#{u_id},#{r_id})
+    </insert>
+    <!--查询角色-->
+    <select id="rolejiaose" resultType="com.aaa.sujiexiche.sj.entity.sys_role">
+        select *from sys_role
+    </select>
+    <!--查询洗车工-->
+    <select id="selectYgms" resultType="com.aaa.sujiexiche.sj.entity.YgmgsEntity">
+        select *from yg_mgs where yg_style='待审核'
+    </select>
+    <!--审核洗车工-->
+    <update id="Ygmsshen" parameterType="com.aaa.sujiexiche.sj.entity.YgmgsEntity">
+        update yg_mgs set yg_style='闲置' where yg_id=#{yg_id}
+    </update>
+    <!--审核洗车工-->
+    <update id="Ygmabo" parameterType="com.aaa.sujiexiche.sj.entity.YgmgsEntity">
+        update yg_mgs set yg_style='驳回' where yg_id=#{yg_id}
+    </update>
+    <!--员工禁用与解禁-->
+    <update id="updateUser">
+        update sys_user set locked=#{locked} where u_id=#{u_id}
+    </update>
+</mapper>

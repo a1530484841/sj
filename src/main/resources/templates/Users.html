@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all"/>
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <script src="layui/layui.js"></script>
+    <script src="js/jquery.min.js"></script>
+</head>
+<body>
+
+<form class="layui-form" method="post" id="searchFrm">
+    <div class="layui-form-item" style="margin-top: 10px">
+        <div class="layui-inline">
+            <label class="layui-form-label">用户姓名:</label>
+            <div class="layui-input-inline">
+                <input type="text" name="username"  autocomplete="off" class="layui-input" id="getname">
+            </div>
+        </div>
+    </div>
+    <div class="layui-inline">
+        <label class="layui-form-label">&nbsp;&nbsp;&nbsp;&nbsp;</label>
+        <div class="layui-input-inline">
+            <button type="button" class="layui-btn layui-btn-normal  layui-icon layui-icon-search" id="doSearch">查询</button>
+            <button type="reset" class="layui-btn layui-btn-warm  layui-icon layui-icon-refresh">重置</button>
+        </div>
+    </div>
+</form>
+<!-- 搜索条件结束 -->
+<!-- 添加和修改的弹出层开始 -->
+<div style="display: none;padding: 20px" id="saveOrUpdateDiv" >
+    <form class="layui-form"  lay-filter="dataFrm" id="dataFrm">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">员工职位：</label>
+                <div class="layui-input-inline">
+                    <select id="r_id" name="r_id">
+                        <option value=""></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">员工账号:</label>
+                <div class="layui-input-inline">
+                    <input type="hidden" name="id">
+                    <input type="text" name="usercode" id="usercode" lay-verify="required"   placeholder="请设置员工账号" autocomplete="off"
+                           class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">员工姓名:</label>
+                <div class="layui-input-inline">
+                    <input type="hidden" name="id">
+                    <input type="text" name="username" id="username" lay-verify="required"   placeholder="请输入员工姓名" autocomplete="off"
+                           class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">登录密码:</label>
+                <div class="layui-input-inline">
+                    <input type="hidden" name="id">
+                    <input type="text" name="password" id="password" lay-verify="required"   placeholder="请设置员工登录密码" autocomplete="off"
+                           class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">联系方式:</label>
+                <div class="layui-input-inline">
+                    <input type="hidden" name="id">
+                    <input type="text" name="phone" id="phone" lay-verify="required"   placeholder="请输入员工登录方式" autocomplete="off"
+                           class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">居住地址:</label>
+                <div class="layui-input-inline">
+                    <input type="hidden" name="id">
+                    <input type="text" name="address" id="address" lay-verify="required"   placeholder="请输入员工登录地址" autocomplete="off"
+                           class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item" style="text-align: center;">
+            <div class="layui-input-block">
+                <button type="button" class="layui-btn layui-btn-normal layui-btn-sm layui-icon layui-icon-release" id="adduser">提交</button>
+                <button type="reset" class="layui-btn layui-btn-warm layui-btn-sm layui-icon layui-icon-refresh" >重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<table class="layui-hide" id="userTable" lay-filter="userTable"></table>
+<div style="display: none;" id="userToolBar">
+    <button type="button" class="layui-btn layui-btn-sm" lay-event="add">增加</button>
+</div>
+<script type="text/html" id="typeConvert">
+    <input type="checkbox"  name = "locked"
+           value = {{d.locked}} lay-skin="switch" lay-text="已启用|已禁用" uid={{d.u_id}}
+           lay-filter="status" {{ d.locked == '1' ? 'checked' : '' }}>
+</script>
+<script src="layui/layui.all.js"></script>
+<script type="text/javascript" th:inline="none">
+
+    var tableIns;
+    layui.use([ 'jquery', 'layer', 'form', 'table'], function() {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var table = layui.table;
+
+        //渲染数据表格
+        tableIns=table.render({
+            elem: '#userTable'   //渲染的目标对象
+            ,url:'role/SelectUser' //数据接口
+            ,title: '用户数据表'//数据导出来的标题
+            ,toolbar:"#userToolBar"   //表格的工具条
+            ,height:'290'
+            ,cellMinWidth:200 //设置列的最小默认宽度
+            ,page: 1  //是否启用分页, limits: [10, 20, 30]
+            ,limits: [2,4,6]
+            ,limit: 4//默认采用3
+            ,cols: [[   //列表数据
+                { field: 'u_id', title: '员工编号', width:142, sort: true, fixed: 'left'}
+                ,{field: 'username', title: '员工姓名', width:142,align:'center'}
+                ,{field: 'usercode', title: '员工账号', width:142,align:'center'}
+                ,{field: 'phone', title: '电话号码', width:142,align:'center'}
+                ,{field: 'address', title: '居住地址', width:142,align:'center'}
+                ,{field: 'r_name', title: '员工职位', width:142,align:'center'}
+                ,{field: 'locked', title: '员工状态', width:142,align:'center',templet:'#typeConvert',sort:true}
+            ]],
+           /* done:function(res, curr, count) {
+                $("[data-field = 'locked']").children().each(function () {
+                    if ($(this).text() == '1') {
+                        $(this).text("未禁用");
+                    }else if ($(this).text() == '0'){
+                        $(this).text("已禁用");
+                    }
+                });
+            }*/
+        })
+        //开关事件(status是lay-filter中的status，注意区别)
+        form.on('switch(status)', function(obj){
+            // 通过属性获取绑定的id值
+            var u_id = $(this).attr('uid');
+            // 判断开关的状态
+            var locked=obj.elem.checked?"1":"0";
+            if(locked=='1'){
+                layer.confirm("你确定要启用这个员工吗",function () {
+                    $.ajax({
+                        url :"role/updateUser",
+                        type : "post",
+                        dataType : "json",
+                        data :{
+                            "u_id":u_id,
+                            "locked":locked
+                        },
+                        success : function(data) {
+                            if(data==1){
+                                layer.msg("该员工已禁用");
+                                //刷新数据 表格
+                                tableIns.reload()
+                            }else if(data==2){
+                                layer.msg("该员工已启用");
+                                //刷新数据 表格
+                                tableIns.reload()
+                            }
+                        }
+                    });
+                })
+            }else if(locked=='0'){
+                layer.confirm("你确定要禁用这个员工吗",function () {
+                    $.ajax({
+                        url :"role/updateUser",
+                        type : "post",
+                        dataType : "json",
+                        data :{
+                            "u_id":u_id,
+                            "locked":locked
+                        },
+                        success : function(data) {
+                            if(data==1){
+                                layer.msg("该员工已禁用");
+                                //刷新数据 表格
+                                tableIns.reload()
+                            }else if(data==2){
+                                layer.msg("该员工已启用");
+                                //刷新数据 表格
+                                tableIns.reload()
+                            }
+                        }
+                    });
+                })
+            }//刷新数据 表格
+            tableIns.reload()
+        });
+        //监听头部工具栏事件
+        table.on("toolbar(userTable)",function(obj){
+            var datas=obj.data;
+            var layEvent = obj.event;
+            if (layEvent=='edit'){
+                if(datas.locked==0){
+                    $(this).text("禁用");
+                }
+            }
+            switch(obj.event){
+                case 'add':
+                    add();
+                    break;
+            };
+
+        })
+        //模糊查询
+        $("#doSearch").click(function(){
+
+            var params=$("#searchFrm").serialize();
+
+            tableIns.reload({
+                url:"role/SelectUser?"+params
+            })
+        });
+
+        //下拉框查询
+        $(function () {
+            $.ajax({
+                type:'post',
+                url:'role/toRole',
+                dataType:'json',
+                success:function (data) {
+                    $.each(data,function (index,item) {
+                        $('#r_id').append(new Option(item.r_name, item.r_id));// 下拉菜单里添加元素
+                    })
+                    layui.form.render("select");
+                }
+            })
+        })
+        var url;
+        var mainIndex;
+        //打开添加页面
+        function add(){
+            mainIndex=layer.open({
+                type:1,
+                title:'添加用户',
+                content:$("#saveOrUpdateDiv"),
+                area:['800px','400px'],
+            });
+        }
+        $(document).on("click","#adduser",function(){
+            //序列化表单数据
+            var usercode=$("#usercode").val();
+            var username=$("#username").val();
+            var password=$("#password").val();
+            var address=$("#address").val();
+            var phone=$("#phone").val();
+            var r_id=$('#r_id option:selected').val()
+            alert(phone+usercode+password);
+            alert(r_id);
+            $.ajax({
+                url:"role/addUser",
+                dataType:"json",
+                type:'post',
+                data:{
+                    'usercode':usercode,
+                    'username':username,
+                    'password':password,
+                    'address':address,
+                    'phone':phone,
+                    'r_id':r_id
+                },
+                success:function (data) {
+                    if(data>0){
+                        $.message("添加失败");
+                    }else{
+                        $.message("添加成功");
+                    }
+                }
+            })
+            layer.close(mainIndex);
+            //刷新数据 表格
+            tableIns.reload();
+        })
+        form.on("submit(doSubmit)",function (obj) {
+
+        })
+    })
+
+
+</script>
+
+
+
+</body>
+
+</html>
