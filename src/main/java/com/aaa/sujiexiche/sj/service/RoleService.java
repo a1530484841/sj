@@ -1,9 +1,6 @@
 package com.aaa.sujiexiche.sj.service;
 
-import com.aaa.sujiexiche.sj.entity.RoleUser;
-import com.aaa.sujiexiche.sj.entity.YgmgsEntity;
-import com.aaa.sujiexiche.sj.entity.sys_role;
-import com.aaa.sujiexiche.sj.entity.sys_user;
+import com.aaa.sujiexiche.sj.entity.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,4 +29,14 @@ public interface RoleService {
     int Ygmabo(Integer yg_id);
     //员工禁用，启用
     int updateUser(int u_id,String locked);
+    //查询权限menu
+    List<sys_permission> selectpermission(sys_permission permission);
+    //查询权限permission
+    List<sys_permission> selectzi(sys_permission permission);
+    //查询岗位现有权限
+    List<sys_role_permission> selectGang(Integer r_id);
+    //删除岗位现有权限
+    int delpermission(Integer r_id);
+    //添加员工权限
+    int addpermission(Integer p_id,Integer r_id);
 }

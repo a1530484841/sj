@@ -1,9 +1,6 @@
 package com.aaa.sujiexiche.sj.service.serviceimpl;
 
-import com.aaa.sujiexiche.sj.entity.RoleUser;
-import com.aaa.sujiexiche.sj.entity.YgmgsEntity;
-import com.aaa.sujiexiche.sj.entity.sys_role;
-import com.aaa.sujiexiche.sj.entity.sys_user;
+import com.aaa.sujiexiche.sj.entity.*;
 import com.aaa.sujiexiche.sj.mapper.roleMapper;
 import com.aaa.sujiexiche.sj.service.RoleService;
 import org.springframework.stereotype.Service;
@@ -17,6 +14,36 @@ public class RoleServiceImpl implements RoleService {
 
     @Resource
     roleMapper rolemapper;
+    //添加员工权限
+    @Override
+    public int addpermission(Integer p_id, Integer r_id) {
+        return rolemapper.addpermission(p_id,r_id);
+    }
+
+    //删除岗位现有权限
+    @Override
+    public int delpermission(Integer r_id) {
+        return rolemapper.delpermission(r_id);
+    }
+
+    //查询岗位现有权限
+    @Override
+    public List<sys_role_permission> selectGang(Integer r_id) {
+        return rolemapper.selectGang(r_id);
+    }
+
+    //查询权限permission
+    @Override
+    public List<sys_permission> selectzi(sys_permission permission) {
+        return rolemapper.selectzi(permission);
+    }
+
+    //查询权限
+    @Override
+    public List<sys_permission> selectpermission(sys_permission permission) {
+        return rolemapper.selectpermission(permission);
+    }
+
     //员工禁用，启用
     @Override
     public int updateUser(int u_id, String locked) {

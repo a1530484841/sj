@@ -13,9 +13,23 @@
     <button type="button" class="layui-btn layui-btn-sm" lay-demo="getChecked">获取选中节点数据</button>
     <button type="button" class="layui-btn layui-btn-sm" lay-demo="setChecked">勾选指定节点</button>
     <button type="button" class="layui-btn layui-btn-sm" lay-demo="reload">重载实例</button>
+    <button type="button" class="layui-btn layui-btn-sm" id="aa">点击</button>
 </div>
-<div id="demo" class="demo-tree-more"></div>
+<div style="display: none;padding: 20px" id="saveRole">
+    <div>
+        <span id="rname"></span>
+        <span id="rid" style="display: none"></span>
+    </div>
+    <div id="demo" class="demo-tree-more"></div>
+    <button type="button" class="layui-btn layui-btn-normal layui-btn-sm layui-icon layui-icon-release" id="addRole">提交</button>
+    <button type="reset" class="layui-btn layui-btn-warm layui-btn-sm layui-icon layui-icon-refresh" id="guanbi">关闭</button>
+
+</div>
 <table class="layui-hide" id="userTable" lay-filter="userTable"></table>
+<div  id="userBar" style="display: none;">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">授权</a>
+</div>
+
 <script src="layui/layui.all.js"></script>
 <script type="text/javascript" th:inline="none">
     var tableIns;
@@ -41,18 +55,153 @@
                 { field: 'r_id', title: '员工编号', width:142, sort: true, fixed: 'left'}
                 ,{field: 'r_name', title: '员工姓名', width:142,align:'center'}
                 ,{field: 'available', title: '员工账号', width:142,align:'center'}
+                , {fixed: 'right', title: '操作', toolbar: '#userBar', align: 'center', width: '200'}
             ]]
         })
-        var nodes="";
+        $(document).on('click',"#addRole",function () {
+            //获得选中的节点
+            var checkData = tree.getChecked('trees');//获得选中的节点
+            if(checkData.length==0){ //判断复选框是否被选中
+                layer.msg("请至少选择一个节点");
+                return false;
+            }else{
+                var ids = [];
+                var chil=[];
+
+                for(var key in checkData){
+                    var node = checkData[key];
+                    ids.push(node.id);//在父节点末尾添加一个或多个元素
+                    chil=node.children;//获取子节点数组
+                    for(var key in chil){ //循环子节点
+                        var children = chil[key];
+                        ids.push(children.id);//在子节点末尾添加一个或多个元素
+                    }
+                }
+            }
+            var r_id=$("#rid").text();
+            $.ajax({
+                url:"role/addPermission",
+                type:"post",
+                dataType:"json",
+                traditional: true,//必须指定为true
+                data:{
+                    p_id:ids,
+                    r_id:r_id
+                },success:function (data) {
+                    if (data==0){
+                        alert("授权成功");
+                        //重载实例
+                        tree.reload('trees', {
+
+                        });
+                        layer.close(mainIndex);
+                    }else{
+                        //重载实例
+                        tree.reload('trees', {
+                        });
+                        layer.close(mainIndex);
+                        alert("授权失败");
+                    }
+                }
+            })
+            alert(ids);
+        })
+
+        var mainIndex;
+        //查询员工现有权限
+        table.on('tool(userTable)', function(obj) {
+            var checks=[];//岗位所有权限id
+            var allfu=[];//父节点
+            var allzi=[];//子节点
+            for(var key in nodes){
+                var node = nodes[key];
+                allfu.push(node.id);//在父节点末尾添加一个或多个元素
+                allzi=node.children;//获取子节点数组
+                for(var key in allzi){
+                    var children = allzi[key];
+                    allfu.push(children.id);//在子节点末尾添加一个或多个元素
+                }
+            }
+            var datas = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            if(layEvent === 'edit'){
+                $.post("role/selectgang",{r_id:datas.r_id},function (data) {
+                    $("#rname").text(datas.r_name);
+                    $("#rid").text(datas.r_id);
+                            for(var i=0;i<data.length;i++){
+                                checks.push(data[i].p_id);
+                                tree.setChecked('trees', [data[i].p_id]);
+                            }
+
+                })
+
+                mainIndex=layer.open({
+                    type:1,
+                    title:'员工授权',
+                    content:$("#saveRole"),
+                    area:['800px','400px'],
+                });
+            }
+        })
+        //关闭窗口
+        $(document).on("click","#guanbi",function () {
+            //重载实例
+            tree.reload('trees', {
+
+            });
+            layer.close(mainIndex);
+        })
+        var nodes=[];//父节点
+        var chillzhi=[];
+        //子节点数据
         $.ajax({
-            url:"",
+            url:"role/selectzi",
             type:"post",
             dataType:"json",
             async:false,
             success:function (result) {
-                
+                chillzhi=result;
             }
-        })
+        });
+        //父节点数据
+        $.ajax({
+            url:"role/selectpermission",
+            type:"post",
+            dataType:"json",
+            async:false,
+            success:function (result) {
+             for(var i=0;i<result.length;i++){
+                 var pname=result[i];
+                 var chile=[];
+                 nodes.push({//父节点
+                     title:pname.p_name,
+                     id:pname.p_id,
+                     spread: true,
+                     children:chile
+                 })
+                 for(var j=0;j<chillzhi.length;j++){//子节点
+                     if(pname.p_id==chillzhi[j].parentid){
+                         chile.push({
+                             title:chillzhi[j].p_name,
+                             id:chillzhi[j].p_id
+                         })
+                     }
+                 }
+            }
+            }
+        });
+        //开启复选框
+        tree.render({
+            elem: '#demo'
+            ,data: nodes
+            ,showCheckbox: true
+            ,id:"trees"
+        });
+      $(document).on('click','#aa',function () {
+          for (var i=0;i<chillzhi.length;i++){
+              alert(chillzhi[i].p_name);
+          }
+      })
     });
 
 </script>

@@ -1,13 +1,11 @@
 package com.aaa.sujiexiche.sj.controller;
 
-import com.aaa.sujiexiche.sj.entity.RoleUser;
-import com.aaa.sujiexiche.sj.entity.YgmgsEntity;
-import com.aaa.sujiexiche.sj.entity.sys_role;
-import com.aaa.sujiexiche.sj.entity.sys_user;
+import com.aaa.sujiexiche.sj.entity.*;
 import com.aaa.sujiexiche.sj.service.RoleService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -129,5 +127,39 @@ public class RoleController {
         }else{
             return 0;
         }
+    }
+    //查询权限menu
+    @RequestMapping("selectpermission")
+    @ResponseBody
+    public Object selectpermission(sys_permission permission){
+            List<sys_permission> permissios=roleservice.selectpermission(permission);
+        System.out.println(permissios);
+            return permissios;
+    }
+    //查询权限menu
+    @RequestMapping("selectzi")
+    @ResponseBody
+    public Object selectzi(sys_permission permission){
+        List<sys_permission> permissios=roleservice.selectzi(permission);
+        return permissios;
+    }
+    //审核洗车工
+    @RequestMapping("selectgang")
+    @ResponseBody
+    public Object selectgang(Integer r_id){
+        List<sys_role_permission> roles=roleservice.selectGang(r_id);
+        return roles;
+    }
+    //审核洗车工
+    @RequestMapping("addPermission")
+    @ResponseBody
+    public int addPermission(String[] p_id, int r_id, Model model){
+        model.getAttribute("p_id");
+        roleservice.delpermission(r_id);
+        for(int i=0;i< p_id.length;i++){
+            int p=Integer.parseInt(p_id[i]);
+                roleservice.addpermission(p,r_id);
+        }
+        return 0;
     }
 }

@@ -63,4 +63,22 @@
     <update id="updateUser">
         update sys_user set locked=#{locked} where u_id=#{u_id}
     </update>
+    <!--父菜单-->
+    <select id="selectpermission" resultType="com.aaa.sujiexiche.sj.entity.sys_permission">
+        select *from sys_permission where type='menu'
+    </select>
+    <!--子菜单-->
+    <select id="selectzi" resultType="com.aaa.sujiexiche.sj.entity.sys_permission">
+        select *from sys_permission where type='permission'
+    </select>
+    <!--查询岗位对应权限-->
+    <select id="selectGang" resultType="com.aaa.sujiexiche.sj.entity.sys_role_permission">
+        select *from sys_role_permission where r_id=#{r_id}
+    </select>
+    <delete id="delpermission">
+        delete from sys_role_permission where r_id=#{r_id}
+    </delete>
+    <insert id="addpermission">
+        insert into sys_role_permission(r_id,p_id) values (#{r_id},#{p_id})
+    </insert>
 </mapper>

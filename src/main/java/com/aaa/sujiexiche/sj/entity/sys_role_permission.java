@@ -1,7 +1,7 @@
 package com.aaa.sujiexiche.sj.entity;
 
 public class sys_role_permission {
-    private Integer id;
+    private Integer rp_id;
     private String r_id;
     private String p_id;
     private sys_role sr;
@@ -10,7 +10,7 @@ public class sys_role_permission {
     @Override
     public String toString() {
         return "sys_role_permission{" +
-                "id=" + id +
+                "id=" + rp_id +
                 ", r_id='" + r_id + '\'' +
                 ", p_id='" + p_id + '\'' +
                 ", sr=" + sr +
@@ -18,12 +18,12 @@ public class sys_role_permission {
                 '}';
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getRp_id() {
+        return rp_id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setRp_id(Integer rp_id) {
+        this.rp_id = rp_id;
     }
 
     public String getR_id() {
