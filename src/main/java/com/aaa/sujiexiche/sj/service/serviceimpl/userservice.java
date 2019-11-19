@@ -1,6 +1,7 @@
 package com.aaa.sujiexiche.sj.service.serviceimpl;
 
 
+import com.aaa.sujiexiche.sj.entity.RoleUser;
 import com.aaa.sujiexiche.sj.entity.sys_permission;
 import com.aaa.sujiexiche.sj.entity.sys_role;
 import com.aaa.sujiexiche.sj.entity.sys_user;
@@ -30,5 +31,13 @@ public class userservice {
     }
     public List<sys_permission> selecturl(int u_id){
         return um.selecturl(u_id);
+    }
+    //查询员工个人信息
+    public RoleUser selectRoleUser(String username){
+        return um.selectRoleUser(username);
+    }
+    //修改员工信息
+    public int UpdateUser(String password,String address,String phone,int u_id){
+        return um.UpdateUser(password,address,phone,u_id);
     }
 }

@@ -5,12 +5,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>layout 后台大布局 - Layui</title>
-
     <link rel="stylesheet" href="layui/css/layui.css">
     <script src="js/jquery-1.8.3.min.js"></script>
     <script src="layui/layui.js"></script>
-
 </head>
+<style>
+    .yourclass{
+        background-color: azure;
+    }
+</style>
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
@@ -33,11 +36,11 @@
             <li class="layui-nav-item">
                 <a href="javascript:;">
                     <img src="http://t.cn/RCzsdCq" class="layui-nav-img" />
-                    <span th:text="${username}"></span>
+                    <span th:text="${username}" id="user-name-label"></span>
                 </a>
                 <dl class="layui-nav-child">
-                    <dd><a href="">基本资料</a></dd>
-                    <dd><a href="">安全设置</a></dd>
+                    <dd><a href="javascript:;" id="tan">基本资料</a></dd>
+                    <dd><a href="javascript:;">安全设置</a></dd>
                 </dl>
             </li>
             <li class="layui-nav-item"><a href="Login.html">注销</a></li>
@@ -73,12 +76,94 @@
         © layui.com - 底部固定区域
     </div>
 </div>
+<div style="display: none;padding: 20px;" id="saveRole">
+    <center><i class="layui-icon layui-icon-username" style="color: #9F9F9F;font-size: 60px;"></i>
+    <div class="doc-icon-name" style="margin-bottom: 20px"><span th:text="${username}"></span></div>
+    <div style="margin-bottom: 30px">
+        <label style="margin-right: 300px">员工账号：<span id="usercode"></span></label>
+        <label>员工职位：<span id="r_name"></span></label>
+    </div>
+    <div style="margin-left: 50px">
+        <label>员工密码：<input id="password" type="text" style="border: 0px;width: 150px"></label>
+        <label>员工地址：<input id="address" type="text" style="border: 0px;width: 150px"></label>
+        <label>联系方式：<input id="phone"lay-verify="required|phone" type="text" style="border: 0px;width: 150px"></label>
+        <input id="u_id" type="text" style="display: none">
+    </div>
+    <div>
+        <button type="button" class="layui-btn layui-btn-normal layui-btn-sm layui-icon layui-icon-release" id="UpdateUser">修改</button>
+        <button type="button" class="layui-btn layui-btn-warm layui-btn-sm layui-icon layui-icon-refresh" id="guanbi">关闭</button>
+    </div></center>
+</div>
 <script src="layui/layui.js"></script>
 <script>
     //JavaScript代码区域
-    layui.use('element', function () {
+    layui.use(['element','jquery', 'layer', 'form', 'table',], function () {
         var element = layui.element;
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var table = layui.table;
+        var mainIndex;
+        $(document).on('click','#tan',function () {
+            var username=$("#user-name-label").text();
+            $.ajax({
+                url:'selectRoleUser',
+                type:'post',
+                dataType:'json',
+                data:{
+                    'username':username
 
+                },
+                success:function (data) {
+                    $("#usercode").text(data.usercode);
+                    $("#r_name").text(data.r_name);
+                    $("#password").val(data.password);
+                    $("#address").val(data.address);
+                    $("#phone").val(data.phone);
+                    $("#u_id").val(data.u_id);
+                }
+            })
+            mainIndex=layer.open({
+                type:1,
+                title:'基本资料',
+                skin: 'yourclass',
+                content:$("#saveRole"),
+                area:['800px','400px'],
+            });
+        })
+        $(document).on('click',"#UpdateUser",function () {
+            var password=$("#password").val();
+            var address=$("#address").val();
+            var phone=$("#phone").val();
+            var u_id=$("#u_id").val();
+            layer.confirm("你确定要修改信息吗？",function () {
+
+
+            $.ajax({
+                url:'UpdateUser',
+                type:'post',
+                dataType:'json',
+                data:{
+                    'password':password,
+                    'address':address,
+                    'u_id':u_id,
+                    'phone':phone
+                },
+                success:function (data) {
+                       if(data>0){
+                           layer.msg("修改成功");
+                           layer.close(mainIndex);
+                       }else{
+                        layer.msg("修改失败");
+                           layer.close(mainIndex);
+                    }
+                }
+            })
+            })
+        })
+        $(document).on('click','#guanbi',function () {
+            layer.close(mainIndex);
+        })
     });
 </script>
 </body>

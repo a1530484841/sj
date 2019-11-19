@@ -61,4 +61,11 @@ p.p_id=rp.p_id and r.r_id=rp.r_id and r.r_id=#{r_id}
 	      sys_user_role
 	    WHERE u_id = #{u_id}))
     </select>
+    <select id="selectRoleUser" resultType="com.aaa.sujiexiche.sj.entity.RoleUser">
+        select *from sys_user su,sys_user_role sur,sys_role sr where su.u_id=sur.u_id
+            and sr.r_id=sur.r_id and su.username=#{username}
+    </select>
+    <update id="UpdateUser">
+        update sys_user set password=#{password},address=#{address},phone=#{phone} where u_id=#{u_id}
+    </update>
 </mapper>
