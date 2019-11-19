@@ -1,6 +1,7 @@
 package com.aaa.sujiexiche.sj.controller;
 
 
+import com.aaa.sujiexiche.sj.entity.RoleUser;
 import com.aaa.sujiexiche.sj.entity.sys_permission;
 import com.aaa.sujiexiche.sj.entity.sys_user;
 import com.aaa.sujiexiche.sj.service.serviceimpl.userservice;
@@ -12,6 +13,7 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -70,6 +72,23 @@ public class usercontroller {
                 model.addAttribute("msg","登录失败，用户名或密码不正确！");
                 return "Login";
             }
+        }
+    }
+    @RequestMapping("selectRoleUser")
+    @ResponseBody
+    public Object selectRoleUser(String username,Model model){
+        RoleUser ru=us.selectRoleUser(username);
+        model.addAttribute("ru",ru);
+        return ru;
+    }
+    @RequestMapping("UpdateUser")
+    @ResponseBody
+    public int UpdateUser(String password,String address,String phone,int u_id){
+        int s=us.UpdateUser(password,address,phone,u_id);
+        if(s>0){
+            return s;
+        }else {
+            return 0;
         }
     }
 }
