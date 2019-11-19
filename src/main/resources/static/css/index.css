@@ -1,0 +1,30 @@
+
+
+
+
+#zhong{
+   position: absolute;
+    margin-top: 190px;
+
+}
+.d1{
+    float: left;
+    color: #ffffff;
+    width: 300px;
+    height: 150px;
+    background: #1E9FFF;
+    margin-left: 30px;
+}
+#daixidan{
+    margin-left: -30px;
+}
+.p1{
+    font-size: 20px;
+    margin-top: 60px;
+    margin-left: 70px;
+}
+
+.gt{
+    font-size: 25px;
+    color: yellow;
+}

@@ -1,24 +1,46 @@
 package com.aaa.sujiexiche.sj.entity;
 
+import java.util.Date;
+
 public class Yhorder {
     private Integer yh_orderid;
     private String yh_number;
     private String yh_newaddress;
     private String yh_xmfw;
     private String yh_carnumber;
-    private String yh_timebegin;
-    private String yh_timeend;
-    private int yh_style;
+    private Date yh_datetimebegin;
+    private Date Yh_datetimeend;
+    private String yh_bz;
+    private String yh_style;
     private int yh_id;
     private int yg_id;
     private String yh_name;
     private String yg_name;
+    private int xm_id;
     private int xcs_id;
     private String xcs_name;
-    private String xcs_price;
 
-
-
+    @Override
+    public String toString() {
+        return "Yhorder{" +
+                "yh_orderid=" + yh_orderid +
+                ", yh_number='" + yh_number + '\'' +
+                ", yh_newaddress='" + yh_newaddress + '\'' +
+                ", yh_xmfw='" + yh_xmfw + '\'' +
+                ", yh_carnumber='" + yh_carnumber + '\'' +
+                ", yh_datetimebegin=" + yh_datetimebegin +
+                ", Yh_datetimeend=" + Yh_datetimeend +
+                ", yh_bz='" + yh_bz + '\'' +
+                ", yh_style='" + yh_style + '\'' +
+                ", yh_id=" + yh_id +
+                ", yg_id=" + yg_id +
+                ", yh_name='" + yh_name + '\'' +
+                ", yg_name='" + yg_name + '\'' +
+                ", xm_id=" + xm_id +
+                ", xcs_id=" + xcs_id +
+                ", xcs_name='" + xcs_name + '\'' +
+                '}';
+    }
 
     public Integer getYh_orderid() {
         return yh_orderid;
@@ -60,27 +82,35 @@ public class Yhorder {
         this.yh_carnumber = yh_carnumber;
     }
 
-    public String getYh_timebegin() {
-        return yh_timebegin;
+    public Date getYh_datetimebegin() {
+        return yh_datetimebegin;
     }
 
-    public void setYh_timebegin(String yh_timebegin) {
-        this.yh_timebegin = yh_timebegin;
+    public void setYh_datetimebegin(Date yh_datetimebegin) {
+        this.yh_datetimebegin = yh_datetimebegin;
     }
 
-    public String getYh_timeend() {
-        return yh_timeend;
+    public Date getYh_datetimeend() {
+        return Yh_datetimeend;
     }
 
-    public void setYh_timeend(String yh_timeend) {
-        this.yh_timeend = yh_timeend;
+    public void setYh_datetimeend(Date yh_datetimeend) {
+        Yh_datetimeend = yh_datetimeend;
     }
 
-    public int getYh_style() {
+    public String getYh_bz() {
+        return yh_bz;
+    }
+
+    public void setYh_bz(String yh_bz) {
+        this.yh_bz = yh_bz;
+    }
+
+    public String getYh_style() {
         return yh_style;
     }
 
-    public void setYh_style(int yh_style) {
+    public void setYh_style(String yh_style) {
         this.yh_style = yh_style;
     }
 
@@ -116,21 +146,27 @@ public class Yhorder {
         this.yg_name = yg_name;
     }
 
-    @Override
-    public String toString() {
-        return "Yhorder{" +
-                "yh_orderid=" + yh_orderid +
-                ", yh_number='" + yh_number + '\'' +
-                ", yh_newaddress='" + yh_newaddress + '\'' +
-                ", yh_xmfw='" + yh_xmfw + '\'' +
-                ", yh_carnumber='" + yh_carnumber + '\'' +
-                ", yh_timebegin='" + yh_timebegin + '\'' +
-                ", yh_timeend='" + yh_timeend + '\'' +
-                ", yh_style=" + yh_style +
-                ", yh_id=" + yh_id +
-                ", yg_id=" + yg_id +
-                ", yh_name='" + yh_name + '\'' +
-                ", yg_name='" + yg_name + '\'' +
-                '}';
+    public int getXm_id() {
+        return xm_id;
+    }
+
+    public void setXm_id(int xm_id) {
+        this.xm_id = xm_id;
+    }
+
+    public int getXcs_id() {
+        return xcs_id;
+    }
+
+    public void setXcs_id(int xcs_id) {
+        this.xcs_id = xcs_id;
+    }
+
+    public String getXcs_name() {
+        return xcs_name;
+    }
+
+    public void setXcs_name(String xcs_name) {
+        this.xcs_name = xcs_name;
     }
 }

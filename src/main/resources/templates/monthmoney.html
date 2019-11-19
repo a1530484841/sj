@@ -1,0 +1,52 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="js/echarts.min.js"></script>
+    <script src="js/jquery-2.1.3.min.js"></script>
+</head>
+<body>
+<table class="layui-hide" id="homeTable" lay-filter="homeTable"></table>
+<div id="main" style="height:600px;width: 900px;"></div>
+<script type="text/javascript">
+    $(function () {
+        $.post("getmonth",function(data){
+            var myChart = echarts.init(document.getElementById('main'));
+            var list = new Array();//前台固定数据。可以通过ajax等方式获取后台查询数据。
+            list = data;
+            var month = new Array();//声明数组存储课程
+            var xcs_price= new Array();//声明数组存储分数
+            //遍历list存储数据
+            for ( var i = 0; i < list.length; i++) {
+                xcs_price[i] = list[i].xcs_price;
+                month[i]=list[i].month+'月';
+            }
+
+            // 指定图表的配置项和数据
+            var option = {
+                title: {
+                    text: '业绩统计_柱状图'
+                },
+                tooltip: {},
+                legend: {
+                    data:['业绩']
+                },
+                xAxis: {
+                    data: month//数据填充
+                },
+                yAxis: {},
+                series: [{
+                    name: '业绩',
+                    type: 'bar',
+                    data: xcs_price//数据填充
+                }]
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        })
+    })
+    // 基于准备好的dom，初始化echarts实例
+
+</script>
+</body>
+</html>

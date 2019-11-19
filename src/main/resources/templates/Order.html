@@ -17,7 +17,7 @@
         <div class="layui-inline">
             <label class="layui-form-label">用户姓名:</label>
             <div class="layui-input-inline">
-                <input type="text" name="yh_name"  autocomplete="off" class="layui-input" id="getname">
+                <input type="text" name="xcg_yhname"  autocomplete="off" class="layui-input" id="getname">
             </div>
         </div>
     </div>
@@ -29,22 +29,35 @@
         </div>
     </div>
 </form>
+
+
+<!-- 搜索条件结束 -->
+<!-- 添加和修改的弹出层开始 -->
+<div style="display: none;padding: 20px" id="saveOrUpdateDiv" >
+    <div class="layui-form-item" style="margin-top: 10px">
+        <div class="layui-inline">
+            <label class="layui-form-label">用户姓名:</label>
+            <div class="layui-input-inline">
+                <input type="text" name="xcg_yhname"  autocomplete="off" class="layui-input" id="xcg_yhname">
+            </div>
+        </div>
+    </div>
+    <table class="layui-hide" id="userTabletwo" lay-filter="userTable"></table>
+</div>
+<!-- 添加和修改的弹出层结束 -->
+<!-- 数据表格开始 -->
 <table class="layui-hide" id="userTable" lay-filter="userTable"></table>
 
 
-<!-- 添加和修改的弹出层结束 -->
-<!-- 数据表格开始 -->
-
-
 <div  id="userBar" style="display: none;">
-
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">用户详情</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">用户详情</a>
 </div>
-
+<!-- 数据表格结束 -->
 <script th:src="@{/layui/layui.js}"></script>
 <script type="text/javascript" th:inline="none">
 
     var tableIns;
+    var tableInstwo;
     layui.use([ 'jquery', 'layer', 'form', 'table'], function() {
         var $ = layui.jquery;
         var layer = layui.layer;
@@ -53,37 +66,45 @@
 
         //渲染数据表格
         tableIns=table.render({
-            elem: '#userTable'   //渲染的目标对象
-            ,url:'page/select' //数据接口
-            ,title: '用户数据表'//数据导出来的标题
-            ,toolbar:"#userToolBar"   //表格的工具条
-            ,height:'full-200'
-            ,cellMinWidth:200 //设置列的最小默认宽度
-            ,page: 1  //是否启用分页, limits: [10, 20, 30]
-            ,limits: [2, 20, 30]
-            ,limit: 2//默认采用3
-            ,cols: [[   //列表数据
-                { field: 'yh_orderid', title: '编号', width:142, sort: true, fixed: 'left'}
-                ,{field: 'yh_number', title: '订单编号', width:142}
-                ,{field: 'yh_newaddress', title: '车辆所在地', width:142}
-                ,{field: 'yh_xmfw', title: '服务类型', width:142}
-                ,{field: 'yh_carnumber', title: '车牌号', width:142}
-                ,{field: 'yh_timebegin', title: '开始时间', width:142}
-                ,{field: 'yh_timeend', title: '结束时间', width:142}
-                ,{field: 'yh_style', title: '订单状态', width:142}
-                ,{field: 'yh_name', title: '用户名', width:142}
-                ,{field: 'yg_name', title: '洗车工', width:142}
+                id:'xcg_id',
+                elem: '#userTable'   //渲染的目标对象
+                ,url:'page/select' //数据接口
+                ,title: '用户数据表'//数据导出来的标题
+                ,toolbar:"#userToolBar"   //表格的工具条
+                ,height:'full-200'
+                ,cellMinWidth:200 //设置列的最小默认宽度
+                ,page: 1  //是否启用分页, limits: [10, 20, 30]
+                ,limits: [5, 10, 15]
+                ,limit: 5//默认采用3
+                ,cols: [[   //列表数据
 
-                ,{fixed: 'right', title:'操作', toolbar: '#userBar',align:'center',width:'260'}
-            ]],
+                ,{field: 'xcg_number', title: '订单编号', width:100}
+                ,{field: 'xcg_yhname', title: '用户姓名', width:100}
+                ,{field: 'xcg_phone', title: '用户电话', width:120}
+                ,{field: 'xcg_yhadress', title: '车辆地址', width:140}
+                ,{field: 'xcg_yhxmfw', title: '服务项目', width:120}
+                ,{field: 'xcg_datetimebegin', title: '服务开始', width:170}
+                ,{field: 'xcg_datetimeend', title: '服务结束', width:170}
+                ,{field: 'xcs_bz', title: '备注', width:120}
+                ,{field: 'xcs_price', title: '服务费用(元)', width:120}
+                ,{field: 'xcg_yhcarnumber', title: '车牌号码', width:120}
+                ,{field: 'xcg_style', title: '订单状态', width:100}
+                ,{field: 'yg_name', title: '服务人员', width:100}
+                ,{fixed: 'right', title:'操作', toolbar: '#userBar',align:'center',width:'120'}
+                ]],
             done:function(res, curr, count) {
-                $("[data-field = 'yh_style']").children().each(function () {
-                    if ($(this).text() == '1') {
+                $("[data-field = 'xcg_style']").children().each(function () {
+                    if ($(this).text() == '2') {
                         $(this).text("已完成");
                     }
                 });
             }
+
         })
+
+
+
+
         //模糊查询
         $("#doSearch").click(function(){
 
@@ -93,15 +114,83 @@
                 url:"page/select?"+params
             })
         });
-        //监听头部工具栏事件
-        table.on("toolbar(userTable)",function(obj){
-            switch(obj.event){
-                case 'add':
-                    add();
-                    break;
-            };
-        })
+
+        //查看用户详情
+        var url;
+        var mainIndex;
+        function openUpdate(data){
+            mainIndex=layer.open({
+                type:1,
+                title:'用户详情',
+                content:$("#saveOrUpdateDiv"),
+                area:['800px','600px'],
+                success:function(data){
+                    form.val("dataFrm",data);
+                    url="page/selectUsers";
+
+
+                }
+            });
+        }
+
+        //保存
+        form.on("submit(doSubmit)",function(obj){
+            //序列化表单数据
+            var params=$("#dataFrm").serialize();
+            $.post(url,params,function(obj){
+                layer.msg(obj);
+                //关闭弹出层
+                layer.close(mainIndex)
+                //刷新数据 表格
+                tableIns.reload();
+            })
+        });
+
+        //监听行工具事件
+        table.on('tool(userTable)', function(obj){
+            var data = obj.data; //获得当前行数据
+
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+
+        if(layEvent === 'edit'){ //编辑
+
+                $("#xcg_yhname").val( data.xcg_yhname);
+            //渲染数据表格
+            $("#xcg_yhname").val();
+            var yh_name=$("#xcg_yhname").val();
+
+            tableInstwo=table.render({
+                elem: '#userTabletwo'   //渲染的目标对象
+                ,url:'page/selectUsers?yh_name='+yh_name //数据接口
+                ,title: '用户数据表'//数据导出来的标题
+                ,toolbar:"#userToolBar"   //表格的工具条
+                ,height:'400'
+                ,cellMinWidth:200 //设置列的最小默认宽度
+                ,cols: [[   //列表数据
+                    { field: 'yh_id', title: '编号', width:142, sort: true, fixed: 'left'}
+                    ,{field: 'yh_name', title: '用户姓名', width:142}
+                    ,{field: 'yh_sex', title: '性别', width:142}
+                    ,{field: 'yh_phone', title: '联系电话', width:142}
+
+                ]],
+
+            })
+                  openUpdate(data);
+
+
+            }
+        });
+
+
+
+
+
+
     })
+
+
+
+
 </script>
 
 

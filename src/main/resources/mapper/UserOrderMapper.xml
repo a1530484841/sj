@@ -5,14 +5,16 @@
 
     <select id="selectUserOrder" resultType="com.aaa.sujiexiche.sj.entity.UserOrder">
 
-      SELECT *FROM  yhorder yho,yh_users yhu,xc_style xcs where yho.yh_id=yhu.yh_id and yho.xcs_id=xcs.xcs_id and  yho.yh_style=0
+    SELECT *FROM  yhorder yho,yh_users yhu,xc_style xcs where yho.yh_id=yhu.yh_id and yho.xcs_id=xcs.xcs_id  and yho.yh_style='待洗车辆'
 
-        <if test="yh_name!=null and yh_name!=''">
-            and yh_name  like concat('%' ,concat(#{yh_name},'%'))
-        </if>
+    <if test="yh_name!=null and yh_name!=''">
+        and yh_name  like concat('%' ,concat(#{yh_name},'%'))
+    </if>
 
+</select>
 
-
+    <select id="selectTui" resultType="com.aaa.sujiexiche.sj.entity.UserOrder">
+        SELECT *FROM  yhorder yho,yh_users yhu,xc_style xcs where yho.yh_id=yhu.yh_id and yho.xcs_id=xcs.xcs_id  and yho.yh_style='退款中'
     </select>
 
     <select id="selectAllEmpCount" parameterType="map" resultType="int">
@@ -20,14 +22,77 @@
 	</select>
 
     <select id="selectYgmgs"  resultType="com.aaa.sujiexiche.sj.entity.YgmgsEntity">
-		select * from yg_mgs where yg_style=1 and yg_area like #{yg_area},'%'
+				select * from yg_mgs where yg_style='闲置'
+
 	</select>
 
     <insert id="addXcg_order" parameterType="com.aaa.sujiexiche.sj.entity.xcg_order">
-        insert into xcg_order (xcg_number,xcg_yhname,xcg_phone,xcg_yhadress,xcg_yhxmfw,xcg_yhcarnumber,yg_id)values(#{xcg_number},#{xcg_yhname},#{xcg_phone},#{xcg_yhadress},#{xcg_yhxmfw},#{xcg_yhcarnumber},#{yg_id})
+        insert into xcg_order (xcg_number,xcg_yhname,xcg_phone,xcg_yhadress,xcs_price,xcg_yhxmfw,xcg_datetimebegin,xcg_datetimeend,xcs_bz,xcg_yhcarnumber,yg_id)values(#{xcg_number},#{xcg_yhname},#{xcg_phone},#{xcg_yhadress},#{xcs_price},#{xcg_yhxmfw},#{xcg_datetimebegin},#{xcg_datetimeend},#{xcs_bz},#{xcg_yhcarnumber},#{yg_id})
     </insert>
 
     <update id="UpdateYhorder" parameterType="com.aaa.sujiexiche.sj.entity.UserOrder">
-         update yhorder set yh_style=1 where yh_orderid=#{yh_orderid}
+         update yhorder set yh_style='已派单' where yh_orderid=#{yh_orderid}
+    </update>
+
+    <update id="UpdateYgstyle" parameterType="com.aaa.sujiexiche.sj.entity.YgmgsEntity">
+         update yg_mgs set yg_style='Working' where yg_id=#{yg_id}
+    </update>
+
+    <update id="UpdateYhordertwo" parameterType="com.aaa.sujiexiche.sj.entity.UserOrder">
+         update yhorder set yh_style='待洗车辆' where yh_number=#{yh_number}
+    </update>
+
+    <update id="UpdateYgstyletwo" parameterType="com.aaa.sujiexiche.sj.entity.YgmgsEntity">
+         update yg_mgs set yg_style='闲置' where yg_name=#{yg_name}
+    </update>
+
+
+
+    <select id="selectOrdering" resultType="com.aaa.sujiexiche.sj.entity.xcg_order">
+
+        SELECT *FROM  xcg_order xc,yg_mgs yg where xc.yg_id=yg.yg_id and xc.xcg_style in('已接单','未接单')
+
+        <if test="xcg_yhname!=null and xcg_yhname!=''">
+            and xcg_yhname  like concat('%' ,concat(#{xcg_yhname},'%'))
+        </if>
+
+
+
+    </select>
+
+    <delete id="Delexcg_order" parameterType="int">
+        delete from xcg_order where xcg_id=#{xcg_id}
+    </delete>
+
+
+
+    <select id="selectXcgorder" parameterType="com.aaa.sujiexiche.sj.entity.xcg_order" resultType="int">
+        select COUNT(*) from xcg_order where xcg_number=#{xcg_number}and xcg_style!='2'
+    </select>
+
+
+    <update id="updatexcgOrder" parameterType="com.aaa.sujiexiche.sj.entity.xcg_order">
+         update xcg_order set xcg_style='退款完成' where xcg_number=#{xcg_number}
+    </update>
+
+    <update id="updateYhorder" parameterType="com.aaa.sujiexiche.sj.entity.Yhorder">
+         update Yhorder set yh_style='退款完成' where yh_number=#{yh_number}
+    </update>
+
+    <update id="updateYh_burse" parameterType="com.aaa.sujiexiche.sj.entity.yh_burse">
+         update yh_burse set yh_jin=yh_jin+#{yh_jin} where yh_id=#{yh_id}
+    </update>
+
+
+    <update id="updatexcgOrderend" parameterType="com.aaa.sujiexiche.sj.entity.xcg_order">
+         update xcg_order set xcg_style='退款失败' where xcg_number=#{xcg_number}
+    </update>
+
+    <update id="updateYhorderend" parameterType="com.aaa.sujiexiche.sj.entity.Yhorder">
+         update Yhorder set yh_style='退款失败' where yh_number=#{yh_number}
+    </update>
+
+    <update id="updateYhorderbz" parameterType="com.aaa.sujiexiche.sj.entity.Yhorder">
+         update Yhorder set yh_bz=#{yh_bz} where yh_number=#{yh_number}
     </update>
 </mapper>

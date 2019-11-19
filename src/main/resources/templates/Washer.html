@@ -1,10 +1,467 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>洗车工管理</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all"/>
+
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <script src="layui/layui.js"></script>
+    <script src="js/jquery.min.js"></script>
+
+
 </head>
 <body>
+<!-- //用户订单查询 -->
+<form class="layui-form" method="post" id="searchFrm">
+    <div class="layui-form-item" style="margin-top: 10px">
+        <div class="layui-inline">
+            <label class="layui-form-label">用户姓名:</label>
+            <div class="layui-input-inline">
+                <input type="text" name="yg_name"  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-inline">
+        <label class="layui-form-label">&nbsp;&nbsp;&nbsp;&nbsp;</label>
+        <div class="layui-input-inline">
+            <button type="button" class="layui-btn layui-btn-normal  layui-icon layui-icon-search" id="doSearch">查询</button>
+            <button type="reset" class="layui-btn layui-btn-warm  layui-icon layui-icon-refresh">重置</button>
+        </div>
+    </div>
+</form>
+
+<table class="layui-hide" id="userTable" lay-filter="userTable"></table>
+
+<div style="display: none;" id="userToolBar">
+    <button type="button" class="layui-btn layui-btn-sm" lay-event="add">增加</button>
+</div>
+<div  id="userBar" style="display: none;">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">离职</a>
+    <a class="layui-btn layui-btn-xs" lay-event="pai" style="background-color: #0000FF">派单</a>
+</div>
+<div  id="userBartwo" style="display: none;">
+    <a class="layui-btn layui-btn-xs" lay-event="choose">选择</a>
+
+</div>
+
+<!-- //派单弹出层 -->
+<!-- 添加和修改的弹出层开始 -->
+<div style="display: none;padding: 20px" id="saveOrUpdateDivtwo" >
+    <input type="hidden" id="yh_orderid" width="30px">
+    <input type="hidden" id="xcg_id" width="30px">
+    <input type="hidden" id="xcg_phone" width="30px">
+    <input type="hidden" id="xcg_number" width="30px">
+    <input type="hidden" id="xcg_yhname" width="30px">
+    <input type="hidden" id="xcg_yhadress" width="30px">
+    <input type="hidden" id="xcg_yhxmfw" width="30px">
+    <input type="hidden" id="xcs_price" width="30px">
+    <input type="hidden" id="xcg_yhcarnumber" width="30px">
+    <input type="hidden" id="xcg_style" width="30px">
+    <input type="hidden" id="xcg_datetimebegin" width="30px">
+    <input type="hidden" id="xcg_datetimeend" width="30px">
+    <input type="hidden" id="xcs_bz" width="30px">
+    <input type="hidden" id="yg_name2" width="30px">
+
+    <table class="layui-hide" id="userTabletwo" lay-filter="userTabletwo"></table>
+</div>
+<div style="display: none;padding: 20px" id="saveOrUpdateDiv" >
+
+    <form class="layui-form"  lay-filter="dataFrm" id="dataFrm">
+        <div class="layui-inline">
+            <label class="layui-form-label"></label>
+            <div class="layui-input-inline">
+
+                <input type="hidden" name="yg_id"
+                     id="yg_id">
+            </div>
+        </div>
+
+
+
+
+<div style="margin-left: 192px">
+        <div class="layui-form-item">
+
+            <div class="layui-inline">
+                <label class="layui-form-label">姓名:</label>
+                <div class="layui-input-inline">
+                    <input type="hidden" name="id">
+                    <input type="text" name="yg_name" lay-verify="required"   placeholder="请输入员工姓名" autocomplete="off"
+                           class="layui-input" id="yg_name">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">电话:</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="yg_phone" lay-verify="required"  placeholder="请输入员工电话" autocomplete="off"
+                           class="layui-input" id="yg_phone">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">住址:</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="yg_newaddress"  placeholder="请输入员工地址" autocomplete="off"
+                           class="layui-input" id="yg_newaddress">
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">负责区域:</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="yg_area"  placeholder="请输入负责区域" autocomplete="off"
+                           class="layui-input" id="yg_area">
+                </div>
+            </div>
+        </div>
+</div>
+        <div class="layui-form-item" style="text-align: center;margin-left: -150px;margin-top: 150px;">
+            <div class="layui-input-block">
+                <button type="button" class="layui-btn layui-btn-normal layui-btn-sm layui-icon layui-icon-release" lay-filter="doSubmit" lay-submit="">提交</button>
+                <button type="reset" class="layui-btn layui-btn-warm layui-btn-sm layui-icon layui-icon-refresh" >重置</button>
+            </div>
+        </div>
+
+    </form>
+
+</div>
+<script th:src="@{/layui/layui.js}"></script>
+<script type="text/javascript" th:inline="none">
+
+    var tableIns;
+    var tableInstwo;
+    layui.use([ 'jquery', 'layer', 'form', 'table'], function() {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var table = layui.table;
+
+
+        //渲染数据表格
+        tableIns=table.render({
+            id:'yg_id',
+            elem: '#userTable'   //渲染的目标对象
+            ,url:'page/SelectYgmgs' //数据接口
+            ,title: '用户数据表'//数据导出来的标题
+            ,toolbar:"#userToolBar"   //表格的工具条
+            ,height:'full-200'
+            ,cellMinWidth:200 //设置列的最小默认宽度
+            ,page: 1  //是否启用分页, limits: [10, 20, 30]
+            ,limits: [5, 10, 20]
+            ,limit: 5//默认采用3
+            ,cols: [[   //列表数据
+
+                {field: 'yg_name', title: '员工姓名', width:142}
+                ,{field: 'yg_phone', title: '员工电话', width:142}
+                ,{field: 'yg_newaddress', title: '员工地址', width:142}
+                ,{field: 'yg_style', title: '当前状态', width:142}
+                ,{field: 'yg_area', title: '负责区域', width:142}
+
+
+
+                ,{fixed: 'right', title:'操作', toolbar: '#userBar',align:'center',width:'250'}
+            ]],
+
+        })
+
+
+        tableInstwo=table.render({
+            elem: '#userTabletwo'   //渲染的目标对象
+            ,url:'page/selectUserOrder' //数据接口
+            ,title: '用户数据表'//数据导出来的标题
+
+            ,height:'300'
+            ,cellMinWidth:200 //设置列的最小默认宽度
+            ,page: 1  //是否启用分页, limits: [10, 20, 30]
+            ,limits: [5, 10, 20]
+            ,limit: 5//默认采用3
+            ,cols: [[   //列表数据
+
+                {field: 'yh_number', title: '订单编号', width:113}
+                ,{field: 'yh_newaddress', title: '车辆所在地', width:113}
+                ,{field: 'yh_carnumber', title: '车牌号', width:113}
+                ,{field: 'yh_datetimebegin', title: '服务时段', width:113}
+                ,{field: 'yh_datetimeend', title: '服务时段', width:113}
+                ,{field: 'yh_bz', title: '用户备注', width:113}
+                ,{field: 'yh_style', title: '订单状态', width:113}
+                ,{field: 'xcs_name', title: '服务类型', width:113}
+                ,{field: 'xcs_price', title: '消费金额（元）', width:113}
+                ,{field: 'yh_name', title: '用户名', width:113}
+                ,{field: 'yh_phone', title: '联系电话', width:113}
+
+                ,{fixed: 'right', title:'操作', toolbar: '#userBartwo',align:'center',width:'113'}
+            ]],
+
+        })
+        //模糊查询
+        $("#doSearch").click(function(){
+            var params=$("#searchFrm").serialize();
+             alert(params);
+            tableIns.reload({
+                url:"page/SelectYgmgs?"+params
+            })
+        });
+        //监听头部工具栏事件
+        table.on("toolbar(userTable)",function(obj){
+            switch(obj.event){
+                case 'add':
+                    add();
+                    break;
+            };
+        })
+        var url;
+        var mainIndex;
+
+        //打开添加页面
+        function add(){
+            mainIndex=layer.open({
+                type:1,
+                title:'添加用户',
+                content:$("#saveOrUpdateDiv"),
+                area:['800px','600px'],
+                success:function(index){
+                    //清空表单数据
+                    $("#dataFrm")[0].reset();
+                    url="page/AddYgmgs";
+                }
+            });
+        }
+
+        function pai(data){
+            mainIndex=layer.open({
+                type:1,
+                title:'当前可派订单',
+                content:$("#saveOrUpdateDivtwo"),
+                area:['1435px','415px'],
+                success:function(data){
+                    //清空表单数据
+                    form.val("dataFrmtwo",data);
+                    url="";
+                }
+            });
+        }
+
+
+
+
+
+
+
+        //打开派单页面
+        function openUpdate(data){
+            mainIndex=layer.open({
+                type:1,
+                title:'编辑',
+                content:$("#saveOrUpdateDiv"),
+                area:['800px','600px'],
+                success:function(data){
+                    form.val("dataFrm",data);
+                    url="page/UpdateYgmgs";
+
+
+                }
+            });
+        }
+
+        //保存
+        form.on("submit(doSubmit)",function(obj){
+
+            //序列化表单数据
+            var params=$("#dataFrm").serialize();
+
+            $.post(url,params,function(obj){
+                layer.msg(obj);
+                //关闭弹出层
+                layer.close(mainIndex)
+                //刷新数据 表格
+                location.reload();
+            })
+        });
+
+
+        //监听行工具事件
+        table.on('tool(userTable)', function(obj){
+            var data = obj.data; //获得当前行数据
+
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+                   var style=data.yg_style;
+                if(layEvent === 'del' && style!='Working'){ //删除
+
+                layer.confirm('真的让【'+data.yg_name+'】员工离职吗', function(index){
+
+                    //向服务端发送删除指令
+                   $.post("page/DeleYgmgs",{yg_id:data.yg_id},function(res){
+                        layer.msg(res);
+                        //刷新数据 表格
+                        tableIns.reload();
+                    })
+                });
+            } else if(layEvent === 'edit'){ //编辑
+                 $("#yg_id").val(data.yg_id);
+
+                $("#yg_name").val(data.yg_name);
+                $("#yg_phone").val(data.yg_phone);
+                $("#yg_newaddress").val(data.yg_newaddress);
+                $("#yg_style").val(data.yg_style);
+                $("#yg_area").val(data.yg_area);
+
+                openUpdate(data);
+            }
+                else if(layEvent === 'pai'&& style==='Working'){
+                    layer.msg('工作状态中的员工不可此操作');
+                    return false;
+                }
+
+             else if (layEvent === 'del'&& style==='Working'){
+                layer.msg('工作状态中的员工不可此操作');
+                return false;
+
+            }   else if(layEvent === 'pai'){
+                    $("#xcg_id").val(data.yg_id);
+                pai();
+            }
+
+        });
+
+
+ /*       //监听行工具事件
+        table.on('tool(userTabletwo)', function(obj){
+            var data = obj.data; //获得当前行数据
+           alert(obj.data);
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+
+           if(layEvent === 'choose'){ //编辑
+               alert(data.yh_number)
+               $("#xcg_number").val(data.yh_number);
+               $("#xcg_yhname").val(data.yh_name);
+               $("#xcg_phone").val(data.yh_phone);
+               $("#xcg_yhadress").val(data.yh_newaddress);
+               $("#xcg_yhxmfw").val(data.xcs_name);
+               $("#xcs_price").val(data.xcs_price);
+               $("#xcg_yhcarnumber").val(data.yh_carnumber);
+               $("#xcg_style").val(data.yh_style);
+               $("#xcs_datetime").val(data.xm_datetime);
+               $("#xcs_bz").val(data.yh_bz);
+
+
+            }
+
+        });*/
+
+//监听行工具事件
+        table.on('tool(userTabletwo)', function(obj){
+            var data = obj.data; //获得当前行数据
+
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+
+            if(layEvent === 'choose'){
+                $("#yh_orderid").val(data.yh_orderid);
+                $("#xcg_number").val(data.yh_number);
+                $("#xcg_yhname").val(data.yh_name);
+                $("#xcg_phone").val(data.yh_phone);
+                $("#xcg_yhadress").val(data.yh_newaddress);
+                $("#xcg_yhxmfw").val(data.xcs_name);
+                $("#xcs_price").val(data.xcs_price);
+                $("#xcg_yhcarnumber").val(data.yh_carnumber);
+                $("#xcg_style").val(data.yh_style);
+
+                $("#xcg_datetimebegin").val(data.yh_datetimebegin);
+                $("#xcg_datetimeend").val(data.yh_datetimeend);
+                $("#xcs_bz").val(data.yh_bz);
+                $("#yg_name2").val(data.yg_name);
+
+                var xcg_number=$("#xcg_number").val();
+                var xcg_yhname=$("#xcg_yhname").val();
+                var xcg_phone=$("#xcg_phone").val();
+                var xcg_yhadress=$("#xcg_yhadress").val();
+                var xcg_yhxmfw=$("#xcg_yhxmfw").val();
+                var xcs_price=$("#xcs_price").val();
+                var xcg_yhcarnumber=$("#xcg_yhcarnumber").val();
+                var xcg_style=$("#xcg_style").val();
+
+                var xcg_datetimebegin=$("#xcg_datetimebegin").val();
+                var xcg_datetimeend=$("#xcg_datetimeend").val();
+                var xcs_bz=$("#xcs_bz").val();
+                var xcg_id=$("#xcg_id").val();
+                var yg_id=$("#xcg_id").val();
+                var yh_orderid=$("#yh_orderid").val();
+                var yg_name= $("#yg_name2").val();
+                $.ajax({
+                    url: 'page/addxcgorder',
+                    dataType: 'json',
+                    type: 'post',
+                    data:{
+                        "xcg_number":xcg_number,
+                        "xcg_yhname":xcg_yhname,
+                        "xcg_phone":xcg_phone,
+                        "xcg_yhadress":xcg_yhadress,
+                        "xcg_yhxmfw":xcg_yhxmfw,
+                        "xcs_price":xcs_price,
+                        "xcg_yhcarnumber":xcg_yhcarnumber,
+                        "xcg_style":xcg_style,
+                        "xcg_datetimebegin":xcg_datetimebegin,
+                        "xcg_datetimeend":xcg_datetimeend,
+                        "xcs_bz":xcs_bz,
+                        "yg_id":xcg_id,
+
+                    },
+                    success: function (data) {
+                        layer.msg(obj);
+                        location.reload();
+                    }
+                })
+
+
+                $.ajax({
+                    url: 'page/updateYgstyle',
+                    dataType: 'json',
+                    type: 'post',
+                    data:{
+                        "yg_id":yg_id
+                    },
+                    success: function (data) {
+                        layer.msg(obj);
+                        location.reload();
+                    }
+                })
+
+
+                $.ajax({
+                    url: 'page/updateYhorder',
+                    dataType: 'json',
+                    type: 'post',
+                    data:{
+                        "yh_orderid":yh_orderid
+                    },
+                    success: function (data) {
+                        location.reload();
+
+                    }
+                })
+                layer.close(mainIndex)
+                //刷新数据 表格
+                location.reload();
+            }
+        });
+    })
+
+
+
+</script>
+
+
 
 </body>
+
+
 </html>

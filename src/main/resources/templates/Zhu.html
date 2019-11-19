@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <script src="js/jquery-2.1.3.min.js"></script>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <script src="layui/layui.js"></script>
+    <script src="js/jquery.min.js"></script>
+</head>
+<body>
+
+<div id="da">
+        <div id="daixidan" class="d1">
+            <p class="p1">今日待洗订单<span class="gt" id="getdaixidan"></span>单</p>
+        </div>
+
+
+
+        <div id="doneday" class="d1">
+            <p class="p1">今日已完成订单<span id="DoneToday" class="gt"></span>单</p>
+        </div>
+
+
+
+
+
+        <div id="proceed" class="d1">
+            <p class="p1" >今日进行中订单<span id="getProceed" class="gt"></span>单</p>
+        </div>
+
+
+
+
+        <div id="tuidan" class="d1">
+            <p class="p1">今日申退订单<span class="gt" id="gettuidan"></span>单</p>
+        </div>
+
+
+
+
+
+</div>
+
+
+<div style="display: none;padding: 20px" id="saveOrUpdateDiv" >
+    <input type="hidden" id="yg_name">
+    <table class="layui-hide" id="userTabletwo" lay-filter="userTable"></table>
+</div>
+
+
+
+
+
+<div id="zhong">
+
+      <table class="layui-hide" id="userTable" lay-filter="userTable"></table>
+
+      <div  id="userBar" style="display: none;">
+          <a class="layui-btn layui-btn-xs" lay-event="edit">查看月汇总</a>
+      </div>
+
+</div>
+</body>
+<script th:src="@{/layui/layui.js}"></script>
+<script type="text/javascript" th:inline="none">
+
+    var tableIns;
+    var tableInstwo;
+    layui.use([ 'jquery', 'layer', 'form', 'table'], function() {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var table = layui.table;
+        //渲染数据表格
+        tableIns=table.render({
+            elem: '#userTable'   //渲染的目标对象
+            ,url:'getTotalAndPrice' //数据接口
+            ,title: '员工数据表'//数据导出来的标题
+            ,height:'600'
+            ,cellMinWidth:200 //设置列的最小默认宽度
+            ,page: 1  //是否启用分页, limits: [10, 20, 30]
+            ,limits: [5, 10, 20]
+            ,limit: 5//默认采用3
+            , cols: [[   //列表数据
+                {field: 'yg_name', title: '员工姓名', width: 122, sort: true, fixed: 'left'}
+                ,{field: 'total', title: '完成单数', width:122}
+                ,{field: 'sumprice', title: '员工今日业绩', width:122}
+                ,{field: 'yg_sumprice', title: '员工今日工资', width:122}
+                ,{field: 'thisdate', title: '当前日期', width:122}
+                ,{fixed: 'right', title:'操作', toolbar: '#userBar',align:'center',width:'122'}
+            ]],
+
+        })
+        $.post("getDoneToday",function(data){
+            $("#DoneToday").text(data);
+        })
+        $.post("getdaixidan",function(data){
+            $("#getdaixidan").text(data);
+        })
+        $.post("getProceed",function(data){
+            $("#getProceed").text(data);
+        })
+        $.post("gettuidan",function(data){
+            $("#gettuidan").text(data);
+        })
+
+        var url;
+        var mainIndex;
+        function openUpdate(data){
+            mainIndex=layer.open({
+                type:1,
+                title:'汇总',
+                content:$("#saveOrUpdateDiv"),
+                area:['700px','250px'],
+                success:function(data){
+                    form.val("dataFrm",data);
+
+
+
+                }
+            });
+
+
+
+        }
+
+
+        //监听行工具事件
+        table.on('tool(userTable)', function(obj){
+            var data = obj.data; //获得当前行数据
+
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+
+            if(layEvent === 'edit'){ //编辑
+
+                $("#yg_name").val( data.yg_name);
+                //渲染数据表格
+                var yg_name=$("#yg_name").val();
+
+                tableInstwo=table.render({
+                    elem: '#userTabletwo'   //渲染的目标对象
+                    ,url:'getAllTotalAndPrice?yg_name='+yg_name //数据接口
+                    ,title: '用户数据表'//数据导出来的标题
+                    ,height:'120'
+                    ,cellMinWidth:200 //设置列的最小默认宽度
+                    ,cols: [[   //列表数据
+                        { field: 'yg_name', title: '员工名称', width:142, sort: true, fixed: 'left'}
+                        ,{field: 'total', title: '本月单数', width:142}
+                        ,{field: 'sumprice', title: '本月业绩', width:142}
+                        ,{field: 'yg_sumprice', title: '本月薪资', width:142}
+
+                    ]],
+
+                })
+                openUpdate(data);
+
+
+            }
+        });
+
+    })
+</script>
+</html>

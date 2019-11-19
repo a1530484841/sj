@@ -1,0 +1,10 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aaa.sujiexiche.sj.mapper.MonthMoneyMapper">
+    <select id="getmonth" resultType="com.aaa.sujiexiche.sj.entity.xcg_order">
+      select xcg_style,xcg_datetimeend,DATE_FORMAT(xcg_datetimeend,'%m') month,sum(xcs_price) xcs_price
+      from xcg_order where xcg_style=2 GROUP BY DATE_FORMAT(xcg_datetimeend,'%m') HAVING DATE_FORMAT(xcg_datetimeend,'%y')=DATE_FORMAT(NOW(),'%y')
+       order by DATE_FORMAT(xcg_datetimeend,'%m') asc
+    </select>
+</mapper>

@@ -1,0 +1,30 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aaa.sujiexiche.sj.mapper.DoneDataMapper">
+    <select id="getDoneToday" resultType="int">
+        select count(*) from xcg_order where xcg_style='2' and DATE_FORMAT(xcg_datetimeend,'%y-%m-%d')=DATE_FORMAT(now(),'%y-%m-%d')
+    </select>
+    <select id="getProceed" resultType="int">
+        select count(*) from xcg_order where xcg_style='已接单' and DATE_FORMAT(xcg_datetimeend,'%y-%m-%d')=DATE_FORMAT(now(),'%y-%m-%d')
+    </select>
+
+    <select id="getdaixidan" resultType="int">
+        select count(*) from xcg_order where xcg_style='未接单' and DATE_FORMAT(xcg_datetimeend,'%y-%m-%d')=DATE_FORMAT(now(),'%y-%m-%d')
+    </select>
+
+    <select id="gettuidan" resultType="int">
+        select count(*) from yhorder where yh_style='退款完成' and DATE_FORMAT(yh_datetimeend,'%y-%m-%d')=DATE_FORMAT(now(),'%y-%m-%d')
+    </select>
+    <select id="getTotalAndPrice" resultType="com.aaa.sujiexiche.sj.entity.xcg_order">
+        select yg_name,count(*) total,SUM(xcs_price) sumprice,DATE_FORMAT(NOW(),'20%y-%m-%d') thisdate,
+        SUM(xcs_price)*0.25 yg_sumprice from xcg_order x,yg_mgs y where x.yg_id=y.yg_id and
+        DATE_FORMAT(xcg_datetimeend,'%d')=DATE_FORMAT(NOW(),'%d')  and x.xcg_style=2 GROUP BY yg_name
+    </select>
+
+    <select id="getAllTotalAndPrice" resultType="com.aaa.sujiexiche.sj.entity.xcg_order">
+      select yg_name,count(*) total,SUM(xcs_price) sumprice,DATE_FORMAT(NOW(),'20%y-%m-%d') thisdate,
+        SUM(xcs_price)*0.25 yg_sumprice from xcg_order x,yg_mgs y where DATE_FORMAT(xcg_datetimeend,'%m')and x.yg_id=y.yg_id and
+  yg_name=#{yg_name} and x.xcg_style=2 GROUP BY yg_name
+    </select>
+</mapper>

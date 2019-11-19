@@ -68,6 +68,14 @@
             </div>
 
 
+            <div class="layui-inline">
+                <label class="layui-form-label">服务开始：</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="xcg_datetimebegin"  placeholder="" autocomplete="off"
+                           class="layui-input" id="xcg_datetimebegin" readonly="readonly">
+                </div>
+            </div>
+
 
 
             <div class="layui-inline">
@@ -75,6 +83,18 @@
                 <div class="layui-input-inline">
                     <input type="text" name="xcg_phone"  placeholder="" autocomplete="off"
                            class="layui-input" id="xcg_phone" readonly="readonly">
+                </div>
+            </div>
+
+
+
+
+
+            <div class="layui-inline">
+                <label class="layui-form-label">服务结束：</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="xcg_datetimeend"  placeholder="" autocomplete="off"
+                           class="layui-input" id="xcg_datetimeend" readonly="readonly">
                 </div>
             </div>
 
@@ -107,11 +127,22 @@
 
 
             <div class="layui-inline">
-                <label class="layui-form-label">订单状态：</label>
+                <label class="layui-form-label">项目价格：</label>
                 <div class="layui-input-inline">
-                    <input type="text"   placeholder="" autocomplete="off"
-                           class="layui-input" id="xcg_style" readonly="readonly">
+                    <input type="text"  name="xcs_price"  placeholder="" autocomplete="off"
+                           class="layui-input" id="xcs_price" readonly="readonly">
                 </div>
+            </div>
+
+            <div class="layui-inline">
+                <label class="layui-form-label">用户备注：</label>
+                <div class="layui-input-inline">
+
+                    <textarea  name="xcs_bz"  placeholder="" autocomplete="off"
+                              class="layui-input" id="xcs_bz" readonly="readonly"></textarea>
+
+                </div>
+
             </div>
 
 
@@ -137,7 +168,7 @@
 
 </div>
 <script th:src="@{/layui/layui.js}"></script>
-<script type="text/javascript" th:inline="none">
+    <script type="text/javascript" th:inline="none">
 
     var tableIns;
     layui.use([ 'jquery', 'layer', 'form', 'table'], function() {
@@ -149,6 +180,7 @@
 
         //渲染数据表格
         tableIns=table.render({
+            id:'yh_orderid',
             elem: '#userTable'   //渲染的目标对象
             ,url:'page/selectUserOrder' //数据接口
             ,title: '用户数据表'//数据导出来的标题
@@ -159,20 +191,20 @@
             ,limits: [5, 10, 20]
             ,limit: 5//默认采用3
             ,cols: [[   //列表数据
-                { field: 'yh_orderid', title: '编号', width:142, sort: true, fixed: 'left'}
-                ,{field: 'yh_number', title: '订单编号', width:142}
-                ,{field: 'yh_newaddress', title: '车辆所在地', width:142}
-                ,{field: 'yh_carnumber', title: '车牌号', width:142}
-                ,{field: 'yh_timebegin', title: '开始时间', width:142}
-                ,{field: 'yh_timeend', title: '结束时间', width:142}
-                ,{field: 'yh_style', title: '订单状态', width:142}
-                ,{field: 'xcs_name', title: '服务类型', width:142}
-                ,{field: 'xcs_price', title: '消费金额（元）', width:142}
-                ,{field: 'yh_name', title: '用户名', width:142}
-                ,{field: 'yh_phone', title: '联系电话', width:142}
+                {field: 'yh_number', title: '订单编号', width:122}
+                ,{field: 'yh_newaddress', title: '车辆所在地', width:122}
+                ,{field: 'yh_carnumber', title: '车牌号', width:122}
+                ,{field: 'yh_datetimebegin', title: '服务时间段', width:170}
+                ,{field: 'yh_datetimeend', title: '服务时间段', width:170}
+                ,{field: 'yh_bz', title: '用户备注', width:122}
+                ,{field: 'yh_style', title: '订单状态', width:122}
+                ,{field: 'xcs_name', title: '服务类型', width:122}
+                ,{field: 'xcs_price', title: '消费金额（元）', width:122}
+                ,{field: 'yh_name', title: '用户名', width:122}
+                ,{field: 'yh_phone', title: '联系电话', width:122}
 
 
-                ,{fixed: 'right', title:'操作', toolbar: '#userBar',align:'center',width:'150'}
+                ,{fixed: 'right', title:'操作', toolbar: '#userBar',align:'center',width:'122'}
             ]],
             done:function(res, curr, count) {
                 $("[data-field = 'yh_style']").children().each(function () {
@@ -184,10 +216,7 @@
         })
         //模糊查询
         $("#doSearch").click(function(){
-
             var params=$("#searchFrm").serialize();
-
-
             tableIns.reload({
                 url:"page/selectUserOrder?"+params
             })
@@ -203,10 +232,25 @@
 
         var url;
         var mainIndex;
+        setTimeout(function () {
+            time()
+        }, 1000)
+function  time(){
+    var yg_area=$("#xcg_yhadress").val();
+    //下拉框查询遍历空闲洗车工A
+    $.ajax({
+        url: 'page/toSelect?yg_area='+yg_area,
+        dataType: 'json',
+        type: 'post',
+        success: function (data) {
+            //重新渲染 固定写法
+            $.each(data, function (index, item) {
+                $('#yg_id').append(new Option(item.yg_name, item.yg_id));// 下拉菜单里添加元素
+            });
+        }
+    })
 
-
-
-
+}
 
 
 
@@ -229,7 +273,22 @@
 
         //保存
         form.on("submit(doSubmit)",function(obj){
+
             var yh_orderid=$("#orderid").val();
+            var yg_id=$("#yg_id").val();
+            $.ajax({
+                url: 'page/updateYgstyle',
+                dataType: 'json',
+                type: 'post',
+                data:{
+                    "yg_id":yg_id
+                },
+                success: function (data) {
+                    layer.msg(obj);
+                   location.reload();
+                }
+            })
+
 
             $.ajax({
                 url: 'page/updateYhorder',
@@ -240,8 +299,11 @@
                 },
                 success: function (data) {
 
+
                 }
             })
+
+
 
 
 
@@ -253,7 +315,7 @@
                 //关闭弹出层
                 layer.close(mainIndex)
                 //刷新数据 表格
-                tableIns.reload();
+                location.reload();
             })
         });
 
@@ -270,36 +332,18 @@
                 $("#xcg_phone").val(data.yh_phone);
                 $("#xcg_yhadress").val(data.yh_newaddress);
                 $("#xcg_yhxmfw").val(data.xcs_name);
+                $("#xcs_price").val(data.xcs_price);
                 $("#xcg_yhcarnumber").val(data.yh_carnumber);
-                 $("#xcg_style").val(data.yh_style);
+                $("#xcg_style").val(data.yh_style);
+                $("#xcg_datetimebegin").val(data.yh_datetimebegin);
+                $("#xcg_datetimeend").val(data.yh_datetimeend);
+                 $("#xcs_bz").val(data.yh_bz);
                 $("#orderid").val(data.yh_orderid);
-                  var style=$("#xcg_style").val();
 
-                //下拉框查询遍历空闲洗车工A
-                var xcg_yhadress=$("#xcg_yhadress").val();
-                alert(xcg_yhadress);
-                $.ajax({
-                    url: 'page/toSelect',
-                    dataType: 'json',
-                    data:{
-                        "yg_area":xcg_yhadress
-                    },
-                    type: 'post',
-                    success: function (data) {
-                        //重新渲染 固定写法
-                        $.each(data, function (index, item) {
-                            $('#yg_id').append(new Option(item.yg_name, item.yg_id));// 下拉菜单里添加元素
-                        });
-                    }
-                })
-
-
-
+               var style=$("#xcg_style").val();
                if (style==0){
               $("#xcg_style").val("待洗车辆");
                    }
-
-
 
                 openUpdate(data);
 

@@ -5,8 +5,20 @@ public class YgmgsEntity {
     private String yg_name;
     private String yg_phone;
     private String yg_newaddress;
-    private int yg_style;
+    private String yg_style;
     private String yg_area;
+
+    @Override
+    public String toString() {
+        return "YgmgsEntity{" +
+                "yg_id=" + yg_id +
+                ", yg_name='" + yg_name + '\'' +
+                ", yg_phone='" + yg_phone + '\'' +
+                ", yg_newaddress='" + yg_newaddress + '\'' +
+                ", yg_style='" + yg_style + '\'' +
+                ", yg_area='" + yg_area + '\'' +
+                '}';
+    }
 
     public Integer getYg_id() {
         return yg_id;
@@ -40,11 +52,11 @@ public class YgmgsEntity {
         this.yg_newaddress = yg_newaddress;
     }
 
-    public int getYg_style() {
+    public String getYg_style() {
         return yg_style;
     }
 
-    public void setYg_style(int yg_style) {
+    public void setYg_style(String yg_style) {
         this.yg_style = yg_style;
     }
 
@@ -54,17 +66,5 @@ public class YgmgsEntity {
 
     public void setYg_area(String yg_area) {
         this.yg_area = yg_area;
-    }
-
-    @Override
-    public String toString() {
-        return "YgmgsEntity{" +
-                "yg_id=" + yg_id +
-                ", yg_name='" + yg_name + '\'' +
-                ", yg_phone='" + yg_phone + '\'' +
-                ", yg_newaddress='" + yg_newaddress + '\'' +
-                ", yg_style=" + yg_style +
-                ", yg_area='" + yg_area + '\'' +
-                '}';
     }
 }

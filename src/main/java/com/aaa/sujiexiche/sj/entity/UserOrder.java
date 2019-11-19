@@ -1,23 +1,24 @@
 package com.aaa.sujiexiche.sj.entity;
 
+
+
+
+
 public class UserOrder {
     private Integer yh_orderid;
     private String yh_number;
     private String yh_newaddress;
     private String yh_carnumber;
-    private String yh_timebegin;
-    private String yh_timeend;
-    private int yh_style;
+    private String yh_datetimebegin;
+    private String Yh_datetimeend;
+    private String yh_style;
     private int yh_id;
     private String yh_name;
     private int xcs_id;
     private String xcs_name;
     private String xcs_price;
     private String yh_phone;
-
-    public String getYh_phone() {
-        return yh_phone;
-    }
+    private String yh_bz;
 
     @Override
     public String toString() {
@@ -26,20 +27,17 @@ public class UserOrder {
                 ", yh_number='" + yh_number + '\'' +
                 ", yh_newaddress='" + yh_newaddress + '\'' +
                 ", yh_carnumber='" + yh_carnumber + '\'' +
-                ", yh_timebegin='" + yh_timebegin + '\'' +
-                ", yh_timeend='" + yh_timeend + '\'' +
-                ", yh_style=" + yh_style +
+                ", yh_datetimebegin='" + yh_datetimebegin + '\'' +
+                ", Yh_datetimeend='" + Yh_datetimeend + '\'' +
+                ", yh_style='" + yh_style + '\'' +
                 ", yh_id=" + yh_id +
                 ", yh_name='" + yh_name + '\'' +
                 ", xcs_id=" + xcs_id +
                 ", xcs_name='" + xcs_name + '\'' +
                 ", xcs_price='" + xcs_price + '\'' +
                 ", yh_phone='" + yh_phone + '\'' +
+                ", yh_bz='" + yh_bz + '\'' +
                 '}';
-    }
-
-    public void setYh_phone(String yh_phone) {
-        this.yh_phone = yh_phone;
     }
 
     public Integer getYh_orderid() {
@@ -74,27 +72,27 @@ public class UserOrder {
         this.yh_carnumber = yh_carnumber;
     }
 
-    public String getYh_timebegin() {
-        return yh_timebegin;
+    public String getYh_datetimebegin() {
+        return yh_datetimebegin;
     }
 
-    public void setYh_timebegin(String yh_timebegin) {
-        this.yh_timebegin = yh_timebegin;
+    public void setYh_datetimebegin(String yh_datetimebegin) {
+        this.yh_datetimebegin = yh_datetimebegin;
     }
 
-    public String getYh_timeend() {
-        return yh_timeend;
+    public String getYh_datetimeend() {
+        return Yh_datetimeend;
     }
 
-    public void setYh_timeend(String yh_timeend) {
-        this.yh_timeend = yh_timeend;
+    public void setYh_datetimeend(String yh_datetimeend) {
+        Yh_datetimeend = yh_datetimeend;
     }
 
-    public int getYh_style() {
+    public String getYh_style() {
         return yh_style;
     }
 
-    public void setYh_style(int yh_style) {
+    public void setYh_style(String yh_style) {
         this.yh_style = yh_style;
     }
 
@@ -136,5 +134,21 @@ public class UserOrder {
 
     public void setXcs_price(String xcs_price) {
         this.xcs_price = xcs_price;
+    }
+
+    public String getYh_phone() {
+        return yh_phone;
+    }
+
+    public void setYh_phone(String yh_phone) {
+        this.yh_phone = yh_phone;
+    }
+
+    public String getYh_bz() {
+        return yh_bz;
+    }
+
+    public void setYh_bz(String yh_bz) {
+        this.yh_bz = yh_bz;
     }
 }
